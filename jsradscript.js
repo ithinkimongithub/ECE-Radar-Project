@@ -7,7 +7,7 @@
 // Sections are CONFIG DATA, MASKS, TABLE DATA, COMPUTATION functions, INITIALIZATION, 
 // beware that the ^ carat symbol is XOR and not an exponential. use Math.pow(base,exp);
 //notes, not in order yet:
-var instructor_mode = false; //initial state. Press button "Instr" to set true and load the instructor.js. Student attempt will gracefully fail.
+var instructor_mode = true; //initial state. Press button "Instr" to set true and load the instructor.js. Student attempt will gracefully fail.
 var instructor_loaded = false; //initial state. prevent loading .js more than once.
 // will add instructor.js to the html elements and set instructor buttons to visible from invisible
 /******************************************** PHYSICAL CONSTANTS ************************************************************************/
