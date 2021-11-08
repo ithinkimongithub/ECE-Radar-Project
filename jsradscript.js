@@ -29,7 +29,7 @@ const FRADAR = 4500000000; //Hz, Radar freq
 const NUMSTRIKES = 3; //not configurable. Following arrays need this # of members, number of strike options to choose from
 const ASTRIKENAMES = ["Conventional_Strike", "Mixed_Strike", "Stealth_Strike"]; //text
 const ACOST = [30000, 35000, 55000]; //cost of each strike type, in dollars
-const ARCS = [6, 4, 0.01]; //RCS of the attacker
+const ARCS = [5.5, 3.5, 0.01]; //RCS of the attacker
 const AALT = [2000, 3000, 6000]; //altitude to fly at (all altitudes in this game are MSL-Mean Sea Level), where non-hill regions are zero feet.
 //game does not check for unrealistic choices of altitude
 const ARWRG = [1, 1.5, 2]; //RWR Gain
@@ -44,7 +44,7 @@ const BUDGET = 100000; //dollars
 // is based upon any part of the cell being within range (9 critical points are checked: 4 corners, 4 midpoints of sides, and the center)
 const NUMSAMTYPES = 3; //next set of arrays need this number of members
 const ASAMNAMES = ["MPQ-26", "MPQ-30", "MPQ-32"]; //text that is displayed on map as well as in Spreadsheet
-const ACOMMG = [1, 7, 15]; //Gain of the communications system of this type
+const ACOMMG = [2, 9, 16]; //Gain of the communications system of this type
 const ACOMMPT = [50, 50, 50]; //P_T in Watts for communications
 const ACOMMPR = [0.000000001, 0.000000001, 0.000000001]; //P_R minimum in Watts for communications
 const ARADG = [3500, 4000, 4500]; //Gain of Radar system
@@ -98,58 +98,58 @@ const Table10HARMRow = Table10OrdersRow + 7;
 // 1 = compute internally and provide in template file (given to student)
 // For lookup tables that are diagonal, they remain rectangular here but will be the upper-right-half when sent to the template
 //Table 1 Comm Range Friis Radio to Radio
-const M1COMMTYPEPOWERRANGE = [  [0,0,1],
-                                [1,0,1],
-                                [1,0,0]];
-const P1COMMTYPEPOWERRANGE = 1; //for student grading, how many points per entry in this category
+const M1COMMTYPEPOWERRANGE = [  [0,1,1],
+                                [1,0,0],
+                                [1,0,1]];
+const P1COMMTYPEPOWERRANGE = 2; //for student grading, how many points per entry in this category
 // with 5x "0"s in this table, at points of 2 each, there are 10 points for this table
 //Table 2 "Visibility" which should be next, R_MAX_LOS of SAM TO SAM
 const M2SITESITEVIS = [ [1,1,0,0,0],
-                        [1,1,1,1,1],
+                        [1,1,0,1,1],
                         [1,1,1,1,1],
                         [1,1,1,1,1],
                         [1,1,1,1,1]];
 const P2SITESITEVIS = 1;
 const M2SITESITELOS = [ [1,1,0,0,0],
-                        [1,1,1,1,1],
+                        [1,1,0,1,1],
                         [1,1,1,1,1],
                         [1,1,1,1,1],
                         [1,1,1,1,1]];
 const P2SITESITELOS = 1;
 //table sub-part separation distance: no mask. all of it is given
 //Table 3 Comm Links Established? 
-const M3COMMLINK = [0,0,0,0,0,0,0,0,0,0]; //5 choose 2 = 10;
+const M3COMMLINK = [0,1,0,0,0,1,0,0,0,0]; //5 choose 2 = 10;
 //comm link table generated dynamically based upon NUMSITES
-const P3COMMLINKS = 0.5;
+const P3COMMLINKS = 1;
 //Table 4: Radar Detection Range based upon target and return strength
 //Row: Which Radar system type, column: package
 const M4RADARTYPEPOWERRANGE  = [[1,0,1],
                                 [1,0,1],
-                                [0,0,0]];
-const P4RADARTYPEPOWERRANGE = 1;
+                                [0,1,0]];
+const P4RADARTYPEPOWERRANGE = 2;
 //Table 5: Radar Range based upon LOS (don't care about dud hills
 const M5SITEACFTLOS  = [[0,1,1],
-                        [0,1,1],
-                        [0,1,1],
-                        [0,1,1],
-                        [0,1,1]];
+                        [1,1,1],
+                        [1,0,1],
+                        [1,1,0],
+                        [1,1,1]];
 const P5SITEACFTLOS = 1;
 //Table 6: entirely student determined
-const M6SITEACFTDETRANGE = [[0,0,0],
-                            [0,0,0],
-                            [0,0,0],
-                            [0,0,0],
-                            [0,0,0]];
+const M6SITEACFTDETRANGE = [[0,0,1],
+                            [0,1,0],
+                            [1,0,1],
+                            [0,1,0],
+                            [1,0,1]];
 const P6SITEACFTDETRANGE = 1;
 //Table 7: Burn Through. Row is the radar type, column is the package type
 const M7RADARTYPEACFTBURN  =  [ [0,1,1],
-                                [0,0,1],
-                                [0,1,0]];
+                                [1,0,1],
+                                [1,1,0]];
 const P7RADARTYPEACFTBURN  = 1;
 //Table 8: RWR Range: Row is the radar type, column is the package type
 const M8RADARTYPEACFTRWR = [[1,1,0],
                             [1,0,1],
-                            [0,0,1]];
+                            [0,1,1]];
 const P8RADARTYPEACFTRWR = 1;
 const POINTSSUCCESS = 15;
 const POINTSHARM = 2;
