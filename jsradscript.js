@@ -7,9 +7,8 @@
 // Sections are CONFIG DATA, MASKS, TABLE DATA, COMPUTATION functions, INITIALIZATION, 
 // beware that the ^ carat symbol is XOR and not an exponential. use Math.pow(base,exp);
 //notes, not in order yet:
-var instructor_mode = true; //initial state. Press button "Instr" to set true and load the instructor.js. Student attempt will gracefully fail.
-var instructor_loaded = false; //initial state. prevent loading .js more than once.
-// will add instructor.js to the html elements and set instructor buttons to visible from invisible
+const b_studentseesgrade = true; //if you want the student to see their grade each time the sim runs, set this to true. This will also
+//make the simulation use the Keyed values for ranges as opposed to what the student thinks the ranges are.
 /******************************************** PHYSICAL CONSTANTS ************************************************************************/
 const SOL = 300000000; //speed of light will be 3x 10 ^8 m/s, per equation sheet
 const FOURPI = 4*Math.PI;
@@ -17,11 +16,9 @@ const FOURPICUBE = 4*4*4*Math.PI*Math.PI*Math.PI;
 const KMPERMILE = 1.61; //per equation sheet
 //all distances are in km, not meters, and line of sight is based upon Distance(miles) = Sqrt(2*height(feet))
 /********************************************************************** CONFIG DATA ****************************************************/
-//Due to varied browser security, javascript will not load files from the internet?, even from the server, so config data resides here. The 
-//bonus is that there is no parsing necessary, so just find the variable and modify it, if it is in this CONFIG section. All of them are const's.
-//not configurable: 9x9 grid, 2 harms per pack for the first two packs, 2 packs required to complete mission, N/S directions, and many of the
-//rules. for sure don't configure the # of package types or anything that will redimension arrays without extensive re-coding!
-const STUDENTSPERGROUP = 5;
+//Config data resides here. not configurable: 9x9 grid, 2 harms per pack for the first two packs, 2 packs required to complete mission, N/S directions, 
+//and many of the rules including the # of package types or anything that will redimension arrays without extensive re-coding!
+const STUDENTSPERGROUP = 1; //number of students per group
 //These consts are all UPPERCASE and an A prefix designates an ARRAY
 const CYBERCOST = 10000; //dollars, cost of a cyber attack
 const FCOMM = 60000000; //Hz, Communications freq in use
@@ -31,7 +28,7 @@ const ASTRIKENAMES = ["Conventional_Strike", "Mixed_Strike", "Stealth_Strike"]; 
 const ACOST = [30000, 35000, 55000]; //cost of each strike type, in dollars
 const ARCS = [5.5, 3.5, 0.01]; //RCS of the attacker
 const AALT = [2000, 3000, 6000]; //altitude to fly at (all altitudes in this game are MSL-Mean Sea Level), where non-hill regions are zero feet.
-//game does not check for unrealistic choices of altitude
+//game does not check for unrealistic choices of altitude such as negatives or too high.
 const ARWRG = [1, 1.5, 2]; //RWR Gain
 const ARWRPR = [0.000000005, 0.000000005, 0.000000005]; //RWR Power Receive (minimum)
 const AJAMPT = [10, 8, 5]; //Jammer P_T in Watts
@@ -102,7 +99,7 @@ const M1COMMTYPEPOWERRANGE = [  [0,1,1],
                                 [1,0,0],
                                 [1,0,1]];
 const P1COMMTYPEPOWERRANGE = 2; //for student grading, how many points per entry in this category
-// with 5x "0"s in this table, at points of 2 each, there are 10 points for this table
+// with 4x "0"s in this table, at points of 2 each, there are 8 points for this table
 //Table 2 "Visibility" which should be next, R_MAX_LOS of SAM TO SAM
 const M2SITESITEVIS = [ [1,1,0,0,0],
                         [1,1,0,1,1],
@@ -298,7 +295,7 @@ function UpdateSitesAndCommLinksForDisabledSites(){
             var site1 = maplinktosam(link, true);
             var site2 = maplinktosam(link,false);
             if(site1 == site || site2 == site){
-                if(b_gradermode){//Keyed
+                if(b_gradermode || b_studentseesgrade){//Keyed
                     if(!commDisabled[link] && K3commlinks[link]){ 
                         activelinkstosite++;
                     }
@@ -417,44 +414,44 @@ var displaytargetlist;
 //LoadINstructorMOde is copied from:
 //https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
 //https://www.html5rocks.com/en/tutorials/speed/script-loading/
-function ToggleInstructor(){
-    var x = document.getElementById("instr-btn");
-    var y = document.getElementById("instr"); //visible or hidden
-    if(instructor_mode == false){
-        instructor_mode = true;
-        y.style.visibility = "visible";
-        x.textContent = "Refresh page to undo (F5)";
-    }
-    //prevent toggling out of instructor and tell user to use F5
-    InitGame();
-}
+//function ToggleInstructor(){
+//    var x = document.getElementById("instr-btn");
+//    var y = document.getElementById("instr"); //visible or hidden
+//    if(instructor_mode == false){
+//        instructor_mode = true;
+//        y.style.visibility = "visible";
+//        x.textContent = "Refresh page to undo (F5)";
+//    }
+//    //prevent toggling out of instructor and tell user to use F5
+//    InitGame();
+//}
 function InitGame() {
-    if(instructor_mode == true && instructor_loaded == false){
-            console.log("loading instr script");
-            loadInstructorMode("instructorjsrad.js", ContinueLoading);
-    }
-    else{
+    //if(instructor_mode == true && instructor_loaded == false){
+    //        console.log("loading instr script");
+    //        loadInstructorMode("instructorjsrad.js", ContinueLoading);
+    //}
+    //else{
         ContinueLoading();
-    }
+    //}
 }
-function loadInstructorMode(url, callback){
-    var head = document.head;
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    script.onreadystatechange = callback;
-    script.onload = callback;
-    head.appendChild(script);
-}
+//function loadInstructorMode(url, callback){
+//    var head = document.head;
+//    var script = document.createElement('script');
+//    script.type = 'text/javascript';
+//    script.src = url;
+//    script.onreadystatechange = callback;
+//    script.onload = callback;
+//    head.appendChild(script);
+//}
 var ContinueLoading = function () {
     console.log("loading game");
-    if(instructor_mode == true){
-        instructor_loaded = true; //instructor.js is loaded, so set to true to prevent further loading
-    }
-    else{
-        var y = document.getElementById("instr"); //visible or hidden
-        y.style.visibility = "hidden";
-    }
+    //if(instructor_mode == true){
+    //    instructor_loaded = true; //instructor.js is loaded, so set to true to prevent further loading
+    //}
+    //else{
+    //   var y = document.getElementById("instr"); //visible or hidden
+    //    y.style.visibility = "hidden";
+    //}
     //in student mode, clear all the computation tables to zero. All values will come from the student's file.
     //in instructor mode, compute all values and place into both the A and K arrays (displayed and keys), then when
     //inspecting a student's file, only masked values will be placed into the simulation so that a student cannot
@@ -468,7 +465,7 @@ var ContinueLoading = function () {
         if(stu < STUDENTSPERGROUP-1)
             combinednames += ", ";
     }
-    if(instructor_mode == true){ //then compute all A and K arrays in tables 1..8
+    //if(instructor_mode == true){ //then compute all A and K arrays in tables 1..8
         //Table 3 - Linear
         for(var i = 0; i < numcommlinks; i++){
             A3commlinks[i] = ComputeCommLink(i);
@@ -522,7 +519,7 @@ var ContinueLoading = function () {
                 KSiteAcftBurnRange[site][p] = K7RADARTypeAcftBurn[ASAMTYPE[site]][p];
             }
         }
-    }
+    //}
     //Table 9: Flight Plan [linear]
     for(var p = 0; p < 3; p++){
         for(var w = 0; w < 18; w++){
@@ -895,11 +892,11 @@ function UpdateCanvas(){
                 for(var h = 0; h < NUMSITES; h++){
                     if(!samdisabled[h]){
                         var detrad = A6SiteAcftDetRange[h][whichPackage];
-                        if(b_gradermode) detrad = K6SiteAcftDetRange[h][whichPackage]; //Keyed
+                        if(b_gradermode || b_studentseesgrade) detrad = K6SiteAcftDetRange[h][whichPackage]; //Keyed
                         var jamrad = ASiteAcftBurnRange[h][whichPackage];
-                        if(b_gradermode) jamrad = KSiteAcftBurnRange[h][whichPackage]; //Keyed
+                        if(b_gradermode || b_studentseesgrade) jamrad = KSiteAcftBurnRange[h][whichPackage]; //Keyed
                         var rawrad = A8RADARTypeAcftRaw[ASAMTYPE[h]][whichPackage];
-                        if(b_gradermode) rawrad = K8RADARTypeAcftRaw[ASAMTYPE[h]][whichPackage]; //Keyed
+                        if(b_gradermode || b_studentseesgrade) rawrad = K8RADARTypeAcftRaw[ASAMTYPE[h]][whichPackage]; //Keyed
                         var radx = gridToKm(ASAMX[h]);
                         var rady = gridToKm(ASAMY[h]);
                         var jetx = gridToKm(gridx);
@@ -921,7 +918,7 @@ function UpdateCanvas(){
                                 distance = Math.sqrt(deltax*deltax + deltay*deltay);
                                 //can airplane jam this site?
                                 var lineofsight = A5SiteAcftLOS[h][whichPackage];
-                                if(b_gradermode) lineofsight = K5SiteAcftLOS[h][whichPackage];
+                                if(b_gradermode || b_studentseesgrade) lineofsight = K5SiteAcftLOS[h][whichPackage];
                                 if(b_jamactive && !samdisabled[h] && distance < rawrad && distance <= lineofsight){
                                     ctx.strokeStyle = "orange";
                                     ctx.lineWidth = 7;
@@ -984,7 +981,7 @@ function UpdateCanvas(){
         ctx.fillStyle = "black";
         ctx.fillText(ExitMessage,xstart,40);
     }
-    if(b_gradermode == true && b_showresults == true){
+    if((b_gradermode == true || b_studentseesgrade) && b_showresults == true){
         ScoreCurrentFile();
         return; //remember: no code after this in this routine due to async behavior of ScoreCurrentFile. Stack will have race condition.
     }
@@ -996,6 +993,8 @@ var isthereafiletograde = false;
 var whichfiletograde = 0;
 var howmanyfilesarethere;
 var tableup = false;
+var studentsfile;
+
 function LoadXLSXFile(){
     if(b_simulating){
         HaltSimulation(); //just in case you try to load a file while another is running
@@ -1009,6 +1008,7 @@ function LoadXLSXFile(){
     else{
         file = event.target.files[0];
     }
+    studentsfile = file;
     name = file.name;
     reader.onload = function(event){
         var data = event.target.result;
@@ -1021,6 +1021,11 @@ function LoadXLSXFile(){
         TurnRadar(true);
         TurnJam(true);
         TurnFPlan(true);
+        //enable the simulation buttons
+        document.getElementById("start-btn").disabled = false;
+        document.getElementById("halt-btn").disabled = false;
+        document.getElementById("start-fast-btn").disabled = false;
+        document.getElementById("show-data-btn").disabled = false;
         UpdateCanvas(); //call this BEFORE starting the sim, to avoid asynch problems
         if(b_gradermode == true){
             StartSimulation(0.1); //yeppers! //0.1 for low speed
@@ -1107,14 +1112,12 @@ function ParseXLSXFile(workbook){
         
     }
     StudentSection = FirstJSON[1].Col5.toString();
-    console.log(StudentSection);
+    console.log(StudentSection, combinednames,"opening file...");
     //Table 1 reading (remember to json index by 1)
     for(r = 0; r < NUMSAMTYPES; r++){
         for(c = 0; c < NUMSAMTYPES; c++){
-            //if not in instructor mode, all values go to the excel sheet
-            //if in instructor mode, the A-arrays are already loaded. Only write where
-            //mask is value zero.
-            if(!instructor_loaded || M1COMMTYPEPOWERRANGE[r][c]==0){
+            //Only write where mask is value zero, such that student is supposed to provide the number.
+            if(M1COMMTYPEPOWERRANGE[r][c]==0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table1CommRangeRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A1CommTypePowerRange[r][c]=f;
@@ -1125,11 +1128,11 @@ function ParseXLSXFile(workbook){
     for(r = 0; r < NUMSITES-1; r++){
         for(c = 0; c < NUMSITES; c++){
             if(c>r){
-                if(!instructor_loaded || M2SITESITEVIS[r][c]==0){
+                if(M2SITESITEVIS[r][c]==0){
                     str = GrabJSONCell(FirstJSON,Table2VisibilityRow+3*r-1,c+1).toString();
                     A2SiteSiteVIS[r][c] = (str.includes('Y') || str.includes('y'));
                 }
-                if(!instructor_loaded || M2SITESITELOS[r][c]==0){
+                if(M2SITESITELOS[r][c]==0){
                     f = parseFloat(GrabJSONCell(FirstJSON,Table2VisibilityRow+3*r+1-1,c+1));
                     if(isNaN(f) || f < 0) f=0;
                     A2SiteSiteLOS[r][c] = f;
@@ -1139,7 +1142,7 @@ function ParseXLSXFile(workbook){
     }
     //Table 3
     for(i = 0; i < numcommlinks; i++){
-        if(!instructor_loaded || M3COMMLINK[i]==0){
+        if(M3COMMLINK[i]==0){
             c = maplinktosam(i,true);
             r = maplinktosam(i,false);
             str = GrabJSONCell(FirstJSON,Table3CommLinkRow+r-1,c+1).toString();
@@ -1149,7 +1152,7 @@ function ParseXLSXFile(workbook){
     //Table 4
     for(r = 0; r < NUMSAMTYPES; r++){
         for(c = 0; c < NUMSTRIKES; c++){
-            if(!instructor_loaded || M4RADARTYPEPOWERRANGE[r][c] == 0){
+            if(M4RADARTYPEPOWERRANGE[r][c] == 0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table4PowerRangeRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A4RADARTypePowerRange[r][c] = f;
@@ -1159,7 +1162,7 @@ function ParseXLSXFile(workbook){
     //Table 5
     for(r = 0; r < NUMSITES; r++){
         for(c = 0; c < NUMSTRIKES; c++){
-            if(!instructor_loaded || M5SITEACFTLOS[r][c] == 0){
+            if(M5SITEACFTLOS[r][c] == 0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table5RADARLOSRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A5SiteAcftLOS[r][c] = f;
@@ -1169,7 +1172,7 @@ function ParseXLSXFile(workbook){
     //Table 6
     for(r = 0; r < NUMSITES; r++){
         for(c = 0; c < NUMSTRIKES; c++){
-            if(!instructor_loaded || M6SITEACFTDETRANGE[r][c] == 0){
+            if(M6SITEACFTDETRANGE[r][c] == 0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table6RADARdetRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A6SiteAcftDetRange[r][c] = f;
@@ -1179,7 +1182,7 @@ function ParseXLSXFile(workbook){
     //Table 7
     for(r = 0; r < NUMSAMTYPES; r++){
         for(c = 0; c < NUMSTRIKES; c++){
-            if(!instructor_loaded || M7RADARTYPEACFTBURN[r][c] == 0){
+            if(M7RADARTYPEACFTBURN[r][c] == 0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table7BurnRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A7RADARTypeAcftBurn[r][c] = f;
@@ -1194,7 +1197,7 @@ function ParseXLSXFile(workbook){
     //Table 8
     for(r = 0;r < NUMSAMTYPES; r++){
         for(c = 0; c < NUMSTRIKES; c++){
-            if(!instructor_loaded || M8RADARTYPEACFTRWR[r][c] == 0){
+            if(M8RADARTYPEACFTRWR[r][c] == 0){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table8RWRRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A8RADARTypeAcftRaw[r][c] = f;
@@ -1238,7 +1241,7 @@ function ParseXLSXFile(workbook){
     //Logic:
     totalcost = ComputeCost();
     EnableAllValidSamsAndLinks();
-    console.log('done parsing data!');
+    console.log(StudentSection,combinednames,"file loaded OK.");
 }
 //************************************ (2) RADIO BUTTONS **********************************
 //REMOVED FEATURE
@@ -1519,4 +1522,531 @@ function HaltSimulation(){
     b_simulating = false;
     b_showresults = true;
     b_success = false;
+}
+
+//KONAMI https://stackoverflow.com/questions/31626852/how-to-add-konami-code-in-a-website-based-on-html w.stoettinger
+
+// a key map of allowed keys
+var allowedKeys = {
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down',
+    65: 'a',
+    66: 'b'
+  };
+  
+  // the 'official' Konami Code sequence
+  var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+  
+  // a variable to remember the 'position' the user has reached so far.
+  var konamiCodePosition = 0;
+  
+  // add keydown event listener
+  document.addEventListener('keydown', function(e) {
+    // get the value of the key code from the key map
+    var key = allowedKeys[e.keyCode];
+    // get the value of the required key from the konami code
+    var requiredKey = konamiCode[konamiCodePosition];
+  
+    // compare the key with the required key
+    if (key == requiredKey) {
+  
+      // move to the next key in the konami code sequence
+      konamiCodePosition++;
+  
+      // if the last key is reached, activate cheats
+      if (konamiCodePosition == konamiCode.length) {
+        activateCheats();
+        konamiCodePosition = 0;
+      }
+    } else {
+      konamiCodePosition = 0;
+    }
+  });
+  
+  function activateCheats() {
+    alert("Cheats Activated!");
+    document.getElementById("instr").style.display = "block";
+  }
+
+/**************************************************** COMPUTE FUNCTIONS ********************************/
+//these functions reference CONFIG data entirely
+const grademargin = 0.01; //as a ratio. 0.01 means 1% difference from answer. An answer of 0.0 is not allowed
+const grademarginpartialcredit = 0.02 //if outside grademargin, partial credit tolerance (this is not implemented)
+const FEEDROWS = 1000;
+const FEEDCOLS = 20;
+function cleardatafeed(){
+    for(var i = 1; i < FEEDROWS; i++){
+        //row 0 is not reset, it has the headers as spec'd when this was declared
+        for(var j = 0; j < FEEDCOLS; j++){
+            datafeed[i][j] = "";
+        }
+    }
+}
+let datafeed = new Array(FEEDROWS);
+for(var t = 0; t < FEEDROWS; t++){
+    datafeed[t] = new Array(FEEDCOLS);
+    datafeed[0][0] = "Filename";
+    datafeed[0][1] = "Section";
+    datafeed[0][2] = "Last";
+    datafeed[0][3] = "First";
+    datafeed[0][4] = "Table 1";
+    datafeed[0][5] = "Table 2";
+    datafeed[0][6] = "Table 3";
+    datafeed[0][7] = "Table 4";
+    datafeed[0][8] = "Table 5";
+    datafeed[0][9] = "Table 6";
+    datafeed[0][10] = "Table 7";
+    datafeed[0][11] = "Table 8";
+    datafeed[0][12] = "Mission";
+    datafeed[0][13] = "Score";
+}
+//function GetInstructorMode(){
+//    return true;
+//}
+function ComputeCommTypePowerRange(Txradio,Rxradio){ //this is range based on power
+    return (SOL/FCOMM)/FOURPI*Math.sqrt(ACOMMPT[Txradio]/ACOMMPR[Rxradio]*ACOMMG[Txradio]*ACOMMG[Rxradio])/1000.0;
+}
+function ComputeSiteSeparation(radio1, radio2){ //provide the index 0..4 of the radio site
+    var xdist = kmpergrid*(ASAMX[radio1]-ASAMX[radio2]);
+    var ydist = kmpergrid*(ASAMY[radio1]-ASAMY[radio2]);
+    return Math.sqrt(xdist*xdist + ydist*ydist);
+}
+function ComputeSiteMaxLOS(radio1, radio2){
+    return KMPERMILE*(Math.sqrt(2*ASAMH[radio1])+Math.sqrt(2*ASAMH[radio2]));
+}
+function ComputeCommLink(link){ //true if the link should be active based on config data
+    var radio1 = maplinktosam(link, true);
+    var radio2 = maplinktosam(link, false);
+    var samtype1 = ASAMTYPE[radio1];
+    var samtype2 = ASAMTYPE[radio2];
+    var R_Power = ComputeCommTypePowerRange(samtype1, samtype2);
+    var R_Sep   = ComputeSiteSeparation(radio1, radio2);
+    var R_LOS   = ComputeSiteMaxLOS(radio1, radio2);
+    if(R_Sep < R_LOS && R_Sep < R_Power){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+function ComputeRADARTypePowerRange(whichsamtype, whichaircraft){
+    let lambda = SOL / FRADAR;
+    let powerratio = ARADPT[whichsamtype]/ARADPR[whichsamtype];
+    let gainproduct = ARADG[whichsamtype]*ARADG[whichsamtype];
+    return Math.sqrt(Math.sqrt(powerratio*gainproduct*ARCS[whichaircraft]*lambda*lambda/(FOURPICUBE)))/1000.0;
+}
+function ComputeSiteStrikeLOS(site,strike){
+    return KMPERMILE*(Math.sqrt(2*ASAMH[site])+Math.sqrt(2*AALT[strike]));
+}
+function ComputeSiteStrikeDetRange(site,strike){
+    let samtype = ASAMTYPE[site];
+    let R_Power = ComputeRADARTypePowerRange(samtype, strike);
+    let R_LOS   = ComputeSiteStrikeLOS(site,strike);
+    return Math.min(R_Power, R_LOS);
+}
+function ComputeRADARTypeStrikeBurn(samtype, strike){
+    //an assumption here is that burn through occurs inside the R_LOS distance. Program will allow
+    //radar stations with nuclear-power-plant levels of power to destory aircraft beyond line-of-sight
+    //and thats probably fine.
+    //return 40;
+    return Math.sqrt(ARADPT[samtype]/AJAMPT[strike]*ARADG[samtype]/AJAMGT[strike]*ARCS[strike]/FOURPI/ARADSNR[samtype])/1000.0;
+}
+function ComputeRADARTypeStrikeRWR(samtype, strike){
+    let lambda = SOL / FRADAR;
+    let powerratio = ARADPT[samtype] / ARWRPR[strike];
+    let gainproduct = ARADG[samtype] * ARWRG[strike];
+    return lambda/FOURPI*Math.sqrt(powerratio*gainproduct)/1000.0;
+}
+function GenerateOutputFile(alloutmode = false){
+    //if alloutmode is true, then this GenerateOutputFile function will give a full output of template + student data, as for saving an output
+    //according to the mask, the student cannot modify the template data
+    var filename = "template.xlsx";
+    if(alloutmode == true){
+        filename = "AnswerKey.xlsx";
+    }
+    var bigrows = 120;
+    var bigcols = 10;
+    var data = new Array(120);
+    var r,c, i, bo, yn;
+    var tempstring;
+    for(r = 0; r < bigrows; r++){
+        data[r] = new Array(bigcols);
+        for(c = 0; c < bigcols; c++){
+            data[r][c] = "";
+        }
+    }
+    //columns:
+    for(c = 0; c < bigcols; c++) data[0][c] = "Col"+c.toString();
+    //Names:
+    console.log(NameRow);
+    data[NameRow-2][0] = "Student Names:";
+    data[NameRow-1][1] = "Last:";
+    data[NameRow-1][2] = "First:";
+    for(r = 0; r < STUDENTSPERGROUP; r++){
+        data[NameRow+r][0] = "Name:"
+        data[NameRow+r][1] = A0StudentNames[r][0];
+        data[NameRow+r][2] = A0StudentNames[r][1];
+    }
+    //Table 1
+    data[Table1CommRangeRow-2][0]="Table 1: Radio to Radio Communication Range (km)";
+    for(c = 0; c < NUMSAMTYPES; c++) data[Table1CommRangeRow-1][c+1]="Type "+ASAMNAMES[c].toString();
+    for(r = 0; r < NUMSAMTYPES; r++){
+        data[Table1CommRangeRow+r][0] = "Type "+ASAMNAMES[r].toString();
+        for(c=0; c<NUMSAMTYPES; c++){
+            if(M1COMMTYPEPOWERRANGE[r][c]==1 || alloutmode == true){
+                data[Table1CommRangeRow+r][c+1] = A1CommTypePowerRange[r][c];
+            }
+        }
+    }
+    //Table 2
+    data[Table2VisibilityRow-2][0]="Table 2: Site to Site Separation & Visibility (km)";
+    for(c = 0; c < NUMSITES; c++){
+        tempstring = ASAMH[c].toString();
+        data[Table2VisibilityRow-1][c+1]=tempstring+" ft Hill";
+    }
+    for(r = 0; r < NUMSITES-1; r++){
+        tempstring = ASAMH[r].toString();
+        data[Table2VisibilityRow+r*3][0] = tempstring+" ft Hill";
+        data[Table2VisibilityRow+r*3+1][0] = "LOS Range (km)";
+        data[Table2VisibilityRow+r*3+2][0] = "Separation (km)";
+        for(c=0; c<NUMSITES; c++){
+            if(c<=r){
+                data[Table2VisibilityRow+3*r][c+1] = "X";    
+                data[Table2VisibilityRow+3*r+1][c+1] = "X";
+                data[Table2VisibilityRow+3*r+2][c+1] = "X";
+            }
+            else{
+                data[Table2VisibilityRow+r*3+2][c+1] = A2SiteSiteSEP[r][c];
+                if(M2SITESITEVIS[r][c]==1 || alloutmode == true){
+                    bo = A2SiteSiteVIS[r][c];
+                    if(bo == true) yn = "YES";
+                    else yn = "NO";
+                    data[Table2VisibilityRow+r*3][c+1] = yn;
+                    data[Table2VisibilityRow+r*3+1][c+1] = A2SiteSiteLOS[r][c];
+                }
+            }
+        }
+    }
+    //Table 3
+    data[Table3CommLinkRow-2][0] = "Table 3: Deployed IADS Communication Links (YES/NO)";
+    for(i = 0; i < NUMSITES; i++){
+        tempstring = ASAMH[i].toString();
+        tempstring += " ft hill w/"+ASAMNAMES[ASAMTYPE[i]];
+        data[Table3CommLinkRow-1][i+1] = tempstring;
+        data[Table3CommLinkRow+i][0] = tempstring;
+    }
+    data[Table3CommLinkRow+NUMSITES-1][0]="";
+    for(r = 0; r < NUMSITES-1; r++){
+        for(c = 0; c < NUMSITES; c++){
+            if(c<=r) data[Table3CommLinkRow+r][c+1] = "X";
+        }
+    }
+    for(i = 0; i < numcommlinks; i++){
+        c = maplinktosam(i,true);
+        r = maplinktosam(i,false);
+        if(M3COMMLINK[i] == 1 || alloutmode == true){
+            if(A3commlinks[i] == true)
+                data[Table3CommLinkRow+r][c+1] = "YES";
+            else
+                data[Table3CommLinkRow+r][c+1] = "NO";
+        }
+    }
+    //Table 4
+    data[Table4PowerRangeRow-2][0] = "Table 4: RADAR to Aircraft Detection Range (km)";
+    for(i = 0; i < NUMSAMTYPES; i++) data[Table4PowerRangeRow+i][0] = "Type "+ASAMNAMES[i];
+    for(i = 0; i < NUMSTRIKES; i++) data[Table4PowerRangeRow-1][1+i] = ASTRIKENAMES[i];
+    for(r = 0; r <  NUMSAMTYPES; r++){
+        for(c = 0; c < NUMSTRIKES; c++){
+            if(M4RADARTYPEPOWERRANGE[r][c] == 1 || alloutmode == true)
+                data[Table4PowerRangeRow+r][c+1] = A4RADARTypePowerRange[r][c];
+        }
+    }
+    //Table 5
+    data[Table5RADARLOSRow-2][0] = "Table 5: Site to Aircraft Visibility (km)";
+    for(i = 0; i < NUMSTRIKES; i++) data[Table5RADARLOSRow-1][1+i] = ASTRIKENAMES[i];
+    for(i = 0; i < NUMSITES; i++)   data[Table5RADARLOSRow+i][0]   = ASAMH[i].toString() + " ft Hill";
+    for(r = 0; r < NUMSITES; r++){
+        for(c = 0; c < NUMSTRIKES; c++){
+            if(M5SITEACFTLOS[r][c] == 1 || alloutmode == true)
+                data[Table5RADARLOSRow+r][1+c] = A5SiteAcftLOS[r][c];
+        }
+    }
+    //Table 6
+    data[Table6RADARdetRow-2][0] = "Table 6: Deployed IADS Aircraft Detection Range (km)";
+    for(i = 0; i < NUMSTRIKES; i++) data[Table6RADARdetRow-1][1+i] = ASTRIKENAMES[i];
+    for(i = 0; i < NUMSITES; i++)   data[Table6RADARdetRow+i][0]   = ASAMH[i].toString() + " ft Hill w/ "+ASAMNAMES[ASAMTYPE[i]];
+    for(r = 0; r < NUMSITES; r++){
+        for(c = 0; c < NUMSTRIKES; c++){
+            if(M6SITEACFTDETRANGE[r][c] == 1 || alloutmode == true)
+                data[Table6RADARdetRow+r][1+c] = A6SiteAcftDetRange[r][c];
+        }
+    }
+    //Table 7  Table 7: Burn-Through Range (km)
+    data[Table7BurnRow-2][0] = "Table 7: RADAR Burn-Through Range (km)";
+    for(i = 0; i < NUMSTRIKES; i++) data[Table7BurnRow-1][1+i] = ASTRIKENAMES[i];
+    for(i = 0; i < NUMSAMTYPES; i++)   data[Table7BurnRow+i][0] = "Type "+ASAMNAMES[i];
+    for(r = 0; r < NUMSAMTYPES; r++){
+        for(c = 0; c < NUMSTRIKES; c++){
+            if(M7RADARTYPEACFTBURN[r][c] == 1 || alloutmode == true)
+                data[Table7BurnRow+r][1+c] = A7RADARTypeAcftBurn[r][c];
+        }
+    }
+    //Table 8: RADAR Warning Receiver Range (km) by Power
+    data[Table8RWRRow-2][0] = "Table 8: Aircraft RWR Range (km)";
+    for(i = 0; i < NUMSTRIKES; i++) data[Table8RWRRow-1][1+i] = ASTRIKENAMES[i];
+    for(i = 0; i < NUMSAMTYPES; i++)   data[Table8RWRRow+i][0] = "Type "+ASAMNAMES[i];
+    for(r = 0; r < NUMSAMTYPES; r++){
+        for(c = 0; c < NUMSTRIKES; c++){
+            if(M8RADARTYPEACFTRWR[r][c] == 1 || alloutmode == true)
+                data[Table8RWRRow+r][1+c] = A8RADARTypeAcftRaw[r][c];
+        }
+    }
+    //Table 9: Flight Plans
+    data[Table9FPlanRow-2][0] = "Table 9: Flight Plans (Fill out at least 2 columns with numbers 1..9";
+    var letters = "ABCDEFGHIIHGFEDCBA";
+    for(i = 0; i < NUMSTRIKES; i++) data[Table9FPlanRow-1][1+i] = ASTRIKENAMES[i];
+    for(i = 0; i < 18; i++) data[Table9FPlanRow+i][0] = letters.charAt(i);
+    //for(r = 0; r < 18; r++){
+    //    for(c = 0; c < NUMSTRIKES; c++){
+            //data[Table9FPlanRow][c+1] = fplans[c][r]; //vertical not horizontal :/ column-row order 
+            //there is no data to enter as an answer key and no mask
+    //    }
+    //}
+    //Table 10: ACO, ATO Data
+    data[Table10OrdersRow][0] = "Table 10: Orders List (Specify N for None, C for Conventional, M for Mixed, or S for Stealth";
+    data[Table10OrdersRow+1][0] = "First Strike:";
+    data[Table10OrdersRow+2][0] = "Second Strike:";
+    data[Table10OrdersRow+3][0] = "EW Jamming (good for inbound and outbound):";
+    data[Table10OrdersRow+4][0] = "Cyber Attack Inbound:";
+    data[Table10OrdersRow+5][0] = "Cyber Attack Outbound (cannot also select inbound):";
+    for(i = 0; i < 5; i++) data[Table10OrdersRow+i+1][1] = "N";
+    //Table 11: HARM Target list
+    data[Table10HARMRow][0] = "Table 11: HARM Target List (0 for None. 1...5 for a hill ordered shortest to tallest, each target costs 2 points against your grade)";
+    data[Table10HARMRow+1][0] = "Conventional First Target:";
+    data[Table10HARMRow+2][0] = "Conventional Second Target:";
+    data[Table10HARMRow+3][0] = "Mixed First Target:";
+    data[Table10HARMRow+4][0] = "Mixed Second Target:";
+    for(i = 0; i < 4; i++) data[Table10HARMRow+i+1][1] = 0;
+    //Finalize to the worksheet
+    var ws_name = "Sheet1";
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, ws_name);
+    XLSX.writeFile(wb, filename);
+}
+//End GenerateOutputFile()
+//Not using events. end of simulation will trigger ScoreCurrentFile which restarts the loop
+function BatchGradeFiles(){ //only called once
+    cleardatafeed();
+    b_gradermode = true;
+    filestograde = event.target.files;
+    howmanyfilesarethere = filestograde.length;
+    isthereafiletograde = true;
+    whichfiletograde = 0;
+    LoadXLSXFile();
+}
+function CloseEnough(correct,test){ //correct value and test value. don't pass zero intentionally
+    if(correct == 0){
+        if(test == 0){
+            return true;
+        }
+        else return false;
+    }
+    var diff = test-correct;
+    if(diff < 0){
+        diff = - diff;
+    }
+    var ratio = diff/correct;
+    if(ratio < grademargin){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+function feedbackmessage(whichtable,row,column,keyvalue,studentvalue){
+    //console.log(whichtable,row,column,keyvalue,studentvalue);
+    var str = "Row:"+(row+1).toString()+",Col:"+(column+1).toString()+",";
+    str += studentvalue.toString();
+    return str;
+}
+function ScoreCurrentFile(){
+    //1. compute a grade....
+    var feedback = ["","","","","","","","","",""]; //8 tables + 9th for exit message with harm missiles, and 10th for score
+    var score = 0;
+    var checked = 0;
+    var studentvalue, correctvalue;
+    feedback[8] = ExitMessage;
+    if(b_success){
+        score += POINTSSUCCESS;
+    }
+    b_success = false;
+    var i, r, c;
+    for(r = 0; r < 5; r++){
+        for(c = 0; c < 5; c++){
+            if(r < NUMSAMTYPES && c < NUMSAMTYPES && M1COMMTYPEPOWERRANGE[r][c]==0){
+                checked++;
+                correctvalue = K1CommTypePowerRange[r][c];
+                studentvalue = A1CommTypePowerRange[r][c];
+                if(CloseEnough(correctvalue,studentvalue)){
+                    score += P1COMMTYPEPOWERRANGE;
+                }
+                else{
+                    feedback[1-1]+=feedbackmessage(1,r,c,correctvalue,studentvalue);
+                }
+            }
+            if(r < NUMSITES && c < NUMSITES){
+                if(M2SITESITEVIS[r][c]==0){
+                    checked++;
+                    correctvalue = K2SiteSiteVIS[r][c];
+                    studentvalue = A2SiteSiteVIS[r][c];
+                    if(correctvalue == studentvalue){
+                        score += P2SITESITEVIS;
+                    }
+                    else{
+                        feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
+                    }
+                }
+                if(M2SITESITELOS[r][c]==0){
+                    checked++;
+                    correctvalue = K2SiteSiteLOS[r][c];
+                    studentvalue = A2SiteSiteLOS[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P2SITESITELOS;
+                    }
+                    else{
+                        feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
+                    }
+                }
+            }
+            if(r < NUMSAMTYPES && c < NUMSTRIKES){
+                if(M4RADARTYPEPOWERRANGE[r][c]==0){
+                    checked++;
+                    correctvalue = K4RADARTypePowerRange[r][c];
+                    studentvalue = A4RADARTypePowerRange[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P4RADARTYPEPOWERRANGE;
+                    }
+                    else{
+                        feedback[4-1]+=feedbackmessage(4,r,c,correctvalue,studentvalue);
+                    }
+                }
+                if(M7RADARTYPEACFTBURN[r][c]==0){
+                    checked++;
+                    correctvalue = K7RADARTypeAcftBurn[r][c];
+                    studentvalue = A7RADARTypeAcftBurn[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P7RADARTYPEACFTBURN;
+                    }
+                    else{
+                        feedback[7-1]+=feedbackmessage(7,r,c,correctvalue,studentvalue);
+                    }
+                }
+                if(M8RADARTYPEACFTRWR[r][c]==0){
+                    checked++;
+                    correctvalue = K8RADARTypeAcftRaw[r][c];
+                    studentvalue = A8RADARTypeAcftRaw[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P8RADARTYPEACFTRWR;
+                    }
+                    else{
+                        feedback[8-1]+=feedbackmessage(8,r,c,correctvalue,studentvalue);
+                    }
+                }
+            }
+            if(r < NUMSITES && c < NUMSTRIKES){
+                if(M5SITEACFTLOS[r][c]==0){
+                    checked++;
+                    correctvalue = K5SiteAcftLOS[r][c];
+                    studentvalue = A5SiteAcftLOS[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P5SITEACFTLOS;
+                    }
+                    else{
+                        feedback[5-1]+=feedbackmessage(5,r,c,correctvalue,studentvalue);
+                    }
+                }
+                if(M6SITEACFTDETRANGE[r][c]==0){
+                    checked++;
+                    correctvalue = K6SiteAcftDetRange[r][c];
+                    studentvalue = A6SiteAcftDetRange[r][c];
+                    if(CloseEnough(correctvalue,studentvalue)){
+                        score += P6SITEACFTDETRANGE;
+                    }
+                    else{
+                        feedback[6-1]+=feedbackmessage(6,r,c,correctvalue,studentvalue);
+                    }
+                }
+            }
+        }
+    }
+    for(i = 0; i < numcommlinks; i++){
+        checked++;
+        correctvalue = K3commlinks[i];
+        studentvalue = A3commlinks[i];
+        //console.log(checked,studentvalue,correctvalue);
+        if(correctvalue == studentvalue){
+            score += P3COMMLINKS;
+        }
+        else{
+            feedback[3-1]+="("+(maplinktosam(i,false)+1).toString()+","+(maplinktosam(i,true)+1).toString()+") is incorrect. ";
+        } 
+    }
+    for(r = 0; r < 2; r++){
+        for(c = 0; c < 2; c++){
+            if(HARMTargetList[r][c] >= 0){
+                feedback[8] += POINTSHARM.toString() + " deducted for HARM shot. ";
+                //penalize whether fired or not. :\
+                score -= POINTSHARM;
+            }
+        }
+    }
+    feedback[9] = score.toString();
+    document.getElementById("studentscore").textContent = score.toString();
+    var currentfilename;
+    if(b_gradermode)
+        currentfilename = filestograde[whichfiletograde].name;
+    else
+        currentfilename = studentsfile.name;
+    console.log(currentfilename);
+    console.log(feedback);
+    //push to datafeed for eventual output
+    for(var stu = 0; stu < STUDENTSPERGROUP; stu++){
+        var thisrow = 1+stu+whichfiletograde*STUDENTSPERGROUP;
+        datafeed[thisrow][0] = currentfilename;
+        datafeed[thisrow][1] = StudentSection;
+        datafeed[thisrow][2] = A0StudentNames[stu][0];
+        datafeed[thisrow][3] = A0StudentNames[stu][1];
+        for(var cats = 0; cats < feedback.length; cats++ ){
+            datafeed[thisrow][cats+4] = feedback[cats];
+        }
+    }
+    whichfiletograde += 1;
+    if(whichfiletograde < howmanyfilesarethere){
+        //b_gradermode = true;
+        //isthereafiletograde = true;
+        LoadXLSXFile();
+    }
+    else{
+        //done
+        isthereafiletograde = false;
+        b_gradermode = false;
+    }
+}
+function SaveGradesToFile(){
+    var filename = "grades.xlsx";
+    //Finalize to the worksheet
+    var ws_name = "Sheet1";
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(datafeed);
+    XLSX.utils.book_append_sheet(wb, ws, ws_name);
+    XLSX.writeFile(wb, filename);
+}
+var n_instructor_speed;
+n_instructor_speed = 0.1;
+function SpeedUp(){
+    n_instructor_speed = 0.55;
+    n_simpartialstep = n_instructor_speed;
 }
