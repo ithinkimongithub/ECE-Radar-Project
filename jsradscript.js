@@ -1200,6 +1200,8 @@ function ParseXLSXFile(workbook){
             SetBGColor(Table3CommLinkRow+r-1,c+1, "yellow");
         }
         else{
+            c = maplinktosam(i,true);
+            r = maplinktosam(i,false);
             SetBGColor(Table3CommLinkRow+r-1,c+1, "lightgray");
         }
     }
