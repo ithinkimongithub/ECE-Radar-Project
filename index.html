@@ -47,11 +47,6 @@ Copyright (C) 2012-present   SheetJS LLC
         <p><b>Loading:</b></p>
         <div>Load your *.xlsx file into this program using the Choose File button. Refresh the page before reloading the same file again.</div>
         <input type="file" name="xlfile" id="xlf" onchange="LoadXLSXFile()" accept=".xlsx">
-        <br><br>
-        <button id="show-data-btn" onclick="ShowData()" disabled>Show File Data</button>
-        <table id="data-table">
-            <tr><td>File data is hidden or empty</td></tr>
-        </table>
         <hr />
         <p><b>Simulation:</b></p>
         <div>Watch the simulation and see if what you've planned can work. A score will also be provided.</div>
@@ -60,7 +55,11 @@ Copyright (C) 2012-present   SheetJS LLC
             <button id="halt-btn" onclick="HaltSimulation()" disabled>Stop</button>
             <button id="start-fast-btn" title="Go Fast" onclick="StartSimulation(1.0)" disabled>Hammer Time</button>
         </div>
-        <p>Your file will earn <a id="studentscore">(unspecified)</a> points.</p>
+        <p>This submission is worth <a id="studentscore">(unspecified. Run Sim to score)</a> points.</p>
+        <button id="show-data-btn" onclick="ShowData()" disabled>Show File Data</button>
+        <table id="data-table">
+            <tr><td>File data is hidden or empty</td></tr>
+        </table>
         <hr />
         <p>The vertical tab to the left of the map is selectable and can change what is shown:</p>
         <div class="FlightTabs">

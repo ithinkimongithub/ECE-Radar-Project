@@ -1073,22 +1073,39 @@ function GrabJSONCell(Object, row, col){
     }
     return "invalid";
 }
+
 var current_sheet_html;
 var original_sheet_html = document.getElementById('data-table').outerHTML;
 current_sheet_html = original_sheet_html;
 var b_showhtmltable;
 b_showhtmltable = false;
+
 function ShowData(){
     b_showhtmltable = !b_showhtmltable;
     if(b_showhtmltable){
-        document.getElementById('data-table').outerHTML = current_sheet_html;
+        console.log("showing table...");
+        document.getElementById('data-table').hidden = "false";
+        //document.getElementById('data-table').outerHTML = current_sheet_html;
         document.getElementById('show-data-btn').textContent = "Hide Table";
     }
     else{
-        document.getElementById('data-table').outerHTML = original_sheet_html;
+        console.log("hiding table...");
+        document.getElementById('data-table').hidden = "true";
+        console.log(document.getElementById('data-table'));
+        //document.getElementById('data-table').outerHTML = original_sheet_html;
         document.getElementById('show-data-btn').textContent = "Show Table";
     }
 }
+
+var FirstJSON;
+
+function SetBGColor(row, col, color){
+    var table = document.getElementById('data-table');
+    var row = table.rows[row+1];
+    var cell = row.cells[col];
+    cell.style.backgroundColor = color;
+}
+
 function ParseXLSXFile(workbook){
     //TODO in instructor mode, in order to grade, this will have to reject unmasked values
     //instructormode
@@ -1097,7 +1114,12 @@ function ParseXLSXFile(workbook){
     var firstworksheet = workbook.Sheets[firstsheetname];
     //using example from https://sheetjs.com/demos/modify.html
     current_sheet_html = XLSX.utils.sheet_to_html(firstworksheet).replace("<table", '<table id="data-table" border="1"');
-    var FirstJSON = XLSX.utils.sheet_to_json(firstworksheet, {defval:"0"});
+    
+    document.getElementById('data-table').outerHTML = current_sheet_html;
+    //document.getElementById('data-table').hidden = "true";
+    //document.getElementById('show-data-btn').textContent = "Show Table";
+
+    FirstJSON = XLSX.utils.sheet_to_json(firstworksheet, {defval:"0"});
     var i, r, c, str;
     //when reading json, the first row of headers doesn't count as a json element,
     //so the first, zero, element is on Excel row 2, and has index 0. Decrement all
@@ -1121,6 +1143,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table1CommRangeRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A1CommTypePowerRange[r][c]=f;
+                SetBGColor(Table1CommRangeRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table1CommRangeRow-1+r,c+1, "lightgray");
             }
         }
     }
@@ -1130,12 +1156,28 @@ function ParseXLSXFile(workbook){
             if(c>r){
                 if(M2SITESITEVIS[r][c]==0){
                     str = GrabJSONCell(FirstJSON,Table2VisibilityRow+3*r-1,c+1).toString();
-                    A2SiteSiteVIS[r][c] = (str.includes('Y') || str.includes('y'));
+                    if(str.includes('Y') || str.includes('y')){
+                        A2SiteSiteVIS[r][c] = true;
+                    }
+                    else if(str.includes('N') || str.includes('n')){
+                        A2SiteSiteVIS[r][c] = false;
+                    }
+                    else{
+                        A2SiteSiteVIS[r][c] = -1; //maybe this works?
+                    }
+                    SetBGColor(Table2VisibilityRow+3*r-1,c+1, "yellow");
+                }
+                else{
+                    SetBGColor(Table2VisibilityRow+3*r-1,c+1, "lightgray");
                 }
                 if(M2SITESITELOS[r][c]==0){
                     f = parseFloat(GrabJSONCell(FirstJSON,Table2VisibilityRow+3*r+1-1,c+1));
                     if(isNaN(f) || f < 0) f=0;
                     A2SiteSiteLOS[r][c] = f;
+                    SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "yellow");
+                }
+                else{
+                    SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "lightgray");
                 }
             }
         }
@@ -1146,7 +1188,19 @@ function ParseXLSXFile(workbook){
             c = maplinktosam(i,true);
             r = maplinktosam(i,false);
             str = GrabJSONCell(FirstJSON,Table3CommLinkRow+r-1,c+1).toString();
-            A3commlinks[i] = (str.includes('Y') || str.includes('y'));
+            if(str.includes('Y') || str.includes('y')){
+                A3commlinks[i] = true;
+            }
+            else if(str.includes('N') || str.includes('n')){
+                A3commlinks[i] = false;
+            }
+            else{
+                A3commlinks[i] = -1; //maybe this works?
+            }
+            SetBGColor(Table3CommLinkRow+r-1,c+1, "yellow");
+        }
+        else{
+            SetBGColor(Table3CommLinkRow+r-1,c+1, "lightgray");
         }
     }
     //Table 4
@@ -1156,6 +1210,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table4PowerRangeRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A4RADARTypePowerRange[r][c] = f;
+                SetBGColor(Table4PowerRangeRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table4PowerRangeRow-1+r,c+1, "lightgray");
             }
         }
     }
@@ -1166,6 +1224,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table5RADARLOSRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A5SiteAcftLOS[r][c] = f;
+                SetBGColor(Table5RADARLOSRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table5RADARLOSRow-1+r,c+1, "lightgray");
             }
         }
     }
@@ -1176,6 +1238,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table6RADARdetRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A6SiteAcftDetRange[r][c] = f;
+                SetBGColor(Table6RADARdetRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table6RADARdetRow-1+r,c+1, "lightgray");
             }
         }
     }
@@ -1186,6 +1252,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table7BurnRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A7RADARTypeAcftBurn[r][c] = f;
+                SetBGColor(Table7BurnRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table7BurnRow-1+r,c+1, "lightgray");
             }
             for(var site = 0; site < NUMSITES; site++){
                 if(ASAMTYPE[site] == r){
@@ -1201,6 +1271,10 @@ function ParseXLSXFile(workbook){
                 f = parseFloat(GrabJSONCell(FirstJSON,Table8RWRRow-1+r,c+1));
                 if(isNaN(f) || f < 0) f=0;
                 A8RADARTypeAcftRaw[r][c] = f;
+                SetBGColor(Table8RWRRow-1+r,c+1, "yellow");
+            }
+            else{
+                SetBGColor(Table8RWRRow-1+r,c+1, "lightgray");
             }
         }
     }
@@ -1210,6 +1284,7 @@ function ParseXLSXFile(workbook){
             f = parseInt(GrabJSONCell(FirstJSON,Table9FPlanRow-1+r,c+1));
             if(isNaN(f) || f < 0) f=0;
             A9fplans[c][r] = f;
+            SetBGColor(Table9FPlanRow-1+r,c+1, "yellow");
         }
     }
     //Table 10
@@ -1874,7 +1949,7 @@ function feedbackmessage(whichtable,row,column,keyvalue,studentvalue){
 }
 function ScoreCurrentFile(){
     //1. compute a grade....
-    var feedback = ["","","","","","","","","",""]; //8 tables + 9th for exit message with harm missiles, and 10th for score
+    var feedback = ["","","","","","","","","",""]; //10 items: 8 tables + 9th for exit message with harm missiles, and 10th for score
     var score = 0;
     var checked = 0;
     var studentvalue, correctvalue;
@@ -1892,6 +1967,7 @@ function ScoreCurrentFile(){
                 studentvalue = A1CommTypePowerRange[r][c];
                 if(CloseEnough(correctvalue,studentvalue)){
                     score += P1COMMTYPEPOWERRANGE;
+                    console.log("table1+");
                 }
                 else{
                     feedback[1-1]+=feedbackmessage(1,r,c,correctvalue,studentvalue);
@@ -1904,6 +1980,7 @@ function ScoreCurrentFile(){
                     studentvalue = A2SiteSiteVIS[r][c];
                     if(correctvalue == studentvalue){
                         score += P2SITESITEVIS;
+                        console.log("table2+");
                     }
                     else{
                         feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
@@ -1915,6 +1992,7 @@ function ScoreCurrentFile(){
                     studentvalue = A2SiteSiteLOS[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P2SITESITELOS;
+                        console.log("table2LOS+");
                     }
                     else{
                         feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
@@ -1928,6 +2006,7 @@ function ScoreCurrentFile(){
                     studentvalue = A4RADARTypePowerRange[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P4RADARTYPEPOWERRANGE;
+                        console.log("table4+");
                     }
                     else{
                         feedback[4-1]+=feedbackmessage(4,r,c,correctvalue,studentvalue);
@@ -1939,6 +2018,7 @@ function ScoreCurrentFile(){
                     studentvalue = A7RADARTypeAcftBurn[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P7RADARTYPEACFTBURN;
+                        console.log("table7+");
                     }
                     else{
                         feedback[7-1]+=feedbackmessage(7,r,c,correctvalue,studentvalue);
@@ -1950,6 +2030,7 @@ function ScoreCurrentFile(){
                     studentvalue = A8RADARTypeAcftRaw[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P8RADARTYPEACFTRWR;
+                        console.log("table8+");
                     }
                     else{
                         feedback[8-1]+=feedbackmessage(8,r,c,correctvalue,studentvalue);
@@ -1963,6 +2044,7 @@ function ScoreCurrentFile(){
                     studentvalue = A5SiteAcftLOS[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P5SITEACFTLOS;
+                        console.log("table5+");
                     }
                     else{
                         feedback[5-1]+=feedbackmessage(5,r,c,correctvalue,studentvalue);
@@ -1974,6 +2056,7 @@ function ScoreCurrentFile(){
                     studentvalue = A6SiteAcftDetRange[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P6SITEACFTDETRANGE;
+                        console.log("table6+");
                     }
                     else{
                         feedback[6-1]+=feedbackmessage(6,r,c,correctvalue,studentvalue);
@@ -1983,16 +2066,19 @@ function ScoreCurrentFile(){
         }
     }
     for(i = 0; i < numcommlinks; i++){
-        checked++;
-        correctvalue = K3commlinks[i];
-        studentvalue = A3commlinks[i];
-        //console.log(checked,studentvalue,correctvalue);
-        if(correctvalue == studentvalue){
-            score += P3COMMLINKS;
+        if(M3COMMLINK[i]==0){
+            checked++;
+            correctvalue = K3commlinks[i];
+            studentvalue = A3commlinks[i];
+            //console.log(checked,studentvalue,correctvalue);
+            if(correctvalue == studentvalue){
+                score += P3COMMLINKS;
+                console.log("table3+");
+            }
+            else{
+                feedback[3-1]+="("+(maplinktosam(i,false)+1).toString()+","+(maplinktosam(i,true)+1).toString()+") is incorrect. ";
+            } 
         }
-        else{
-            feedback[3-1]+="("+(maplinktosam(i,false)+1).toString()+","+(maplinktosam(i,true)+1).toString()+") is incorrect. ";
-        } 
     }
     for(r = 0; r < 2; r++){
         for(c = 0; c < 2; c++){
@@ -2000,6 +2086,7 @@ function ScoreCurrentFile(){
                 feedback[8] += POINTSHARM.toString() + " deducted for HARM shot. ";
                 //penalize whether fired or not. :\
                 score -= POINTSHARM;
+                console.log("harm-");
             }
         }
     }
