@@ -1083,22 +1083,15 @@ function GrabJSONCell(Object, row, col){
 var current_sheet_html;
 var original_sheet_html = document.getElementById('data-table').outerHTML;
 current_sheet_html = original_sheet_html;
-var b_showhtmltable;
-b_showhtmltable = false;
 
 function ShowData(){
-    b_showhtmltable = !b_showhtmltable;
-    if(b_showhtmltable){
-        console.log("showing table...");
-        document.getElementById('data-table').hidden = "false";
-        //document.getElementById('data-table').outerHTML = current_sheet_html;
+
+    if(document.getElementById('data-table').style.display == "none"){
+        document.getElementById('data-table').style.display = "block";
         document.getElementById('show-data-btn').textContent = "Hide Table";
     }
     else{
-        console.log("hiding table...");
-        document.getElementById('data-table').hidden = "true";
-        console.log(document.getElementById('data-table'));
-        //document.getElementById('data-table').outerHTML = original_sheet_html;
+        document.getElementById('data-table').style.display = "none";
         document.getElementById('show-data-btn').textContent = "Show Table";
     }
 }
@@ -1123,8 +1116,7 @@ function ParseXLSXFile(workbook){
     current_sheet_html = XLSX.utils.sheet_to_html(firstworksheet).replace("<table", '<table id="data-table" border="1"');
     
     document.getElementById('data-table').outerHTML = current_sheet_html;
-    document.getElementById('data-table').hidden = "true";
-    document.getElementById('show-data-btn').textContent = "Show Table";
+    document.getElementById('data-table').style.display = "none"
 
     FirstJSON = XLSX.utils.sheet_to_json(firstworksheet, {defval:"0"});
     var i, r, c, str;

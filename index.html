@@ -49,16 +49,17 @@ Copyright (C) 2012-present   SheetJS LLC
         <input id="fileselector" type="file" name="xlfile" id="xlf" onchange="LoadXLSXFile()" accept=".xlsx">
         <hr />
         <p><b>Simulation:</b></p>
+        <p>This submission is worth <a id="studentscore">(unspecified. Run Sim to score)</a> points.</p>
         <div>Watch the simulation and see if what you've planned can work. A score will also be provided.</div>
         <div class="control-bar">
             <button id="start-btn" onclick="StartSimulation(0.1)" disabled>Start</button>
             <button id="halt-btn" onclick="HaltSimulation()" disabled>Stop</button>
             <button id="start-fast-btn" title="Go Fast" onclick="StartSimulation(1.0)" disabled>Hammer Time</button>
         </div>
-        <p>This submission is worth <a id="studentscore">(unspecified. Run Sim to score)</a> points.</p>
+        <br>
         <button id="show-data-btn" onclick="ShowData()" disabled>Show File Data</button>
         <table id="data-table">
-            <tr><td>File data is hidden or empty</td></tr>
+            <tr><td>File data is empty</td></tr>
         </table>
         <hr />
         <p>The vertical tab to the left of the map is selectable and can change what is shown:</p>
