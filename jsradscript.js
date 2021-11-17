@@ -425,6 +425,12 @@ var displaytargetlist;
 //    //prevent toggling out of instructor and tell user to use F5
 //    InitGame();
 //}
+
+var fileInput = document.getElementById("fileselector");
+fileInput.addEventListener("click", function() {
+    fileInput.value = null;
+})
+
 function InitGame() {
     //if(instructor_mode == true && instructor_loaded == false){
     //        console.log("loading instr script");
@@ -847,17 +853,17 @@ function UpdateCanvas(){
                 var griddiff = gridx - ngridx;
                 if (griddiff < 0) griddiff = -griddiff;
                 if(Number.isNaN(gridx)){
-                    ExitMessage = "Waypoint is not a number";
+                    ExitMessage = "Waypoint is not a number.";
                     HaltSimulation();
                 }
                 if (gridx < 1 || gridx > 9){
-                    ExitMessage = "Waypoint not in range of 1..9";
+                    ExitMessage = "Waypoint not in range of 1..9.";
                     HaltSimulation();
                 }
                 if (griddiff > 1 || ngridx < 1 || ngridx > 9 || Number.isNaN(ngridx)){
-                    ExitMessage = "Cannot perform next move. Must be 45-diagonal or straight ahead";
+                    ExitMessage = "Cannot perform next move. Must be 45-diagonal or straight ahead.";
                     if(Number.isNaN(ngridx)){
-                        ExitMessage = "Oops, end of flight plan";
+                        ExitMessage = "Oops, end of flight plan.";
                     }
                     HaltSimulation();
                 }
@@ -866,7 +872,7 @@ function UpdateCanvas(){
                     var mirrorindex = StepToM[n_simstep];
                     var mirrorx = A9fplans[whichPackage][mirrorindex];
                     if(mirrorx == gridx){
-                        ExitMessage = "A Strike Package cannot fly to the same point twice";
+                        ExitMessage = "A Strike Package cannot fly to the same point twice.";
                         HaltSimulation();
                     }
                 }
@@ -874,14 +880,14 @@ function UpdateCanvas(){
             //did airplane hit dud dirt?
             for(var h = 0; h < NUMDUDS; h++){
                 if(ADUDX[h] == gridx && ADUDY[h] == gridy && ADUDH[h] >= AALT[whichPackage]){
-                    ExitMessage = "Terrain Blocking Flighpath";
+                    ExitMessage = "Terrain Blocking Flighpath.";
                     HaltSimulation();
                 }
             }
             //did airplane hit sam dirt?
             for(var h = 0; h < NUMSITES; h++){
                 if(ASAMX[h] == gridx && ASAMY[h] == gridy && ASAMH[h] >= AALT[whichPackage]){
-                    ExitMessage = "Terrain Blocking Flighpath";
+                    ExitMessage = "Terrain Blocking Flighpath.";
                     HaltSimulation();
                 }
             }
@@ -931,7 +937,7 @@ function UpdateCanvas(){
                                 //can airplane hit site with harm on target list?
                                 if(!samdisabled[h] && stillontargetlist && distance <= rawrad && distance <= lineofsight){
                                     samdisabled[h] = true;
-                                    console.log("Harm fired", h);
+                                    console.log("Harm fired.", h);
                                     UpdateSitesAndCommLinksForDisabledSites();
                                     ctx.strokeStyle = "red";
                                     ctx.lineWidth = 3;
@@ -944,7 +950,7 @@ function UpdateCanvas(){
                                 //can site hit airplane in non-jamming scenario
                                 if(!samdisabled[h] && distance <= detrad && !b_jamactive && b_ok == true){
                                     b_ok = false;
-                                    ExitMessage = "Aircraft entered WEZ without ECM";
+                                    ExitMessage = "Aircraft entered WEZ without ECM.";
                                     ctx.beginPath();
                                     ctx.strokeStyle = "blue";
                                     ctx.lineWidth = 3;
@@ -957,7 +963,7 @@ function UpdateCanvas(){
                                 //can site hit airplane in jamming scenario
                                 if(!samdisabled[h] && distance <= jamrad && b_jamactive && b_ok == true){
                                     b_ok = false;
-                                    ExitMessage = "Jamming inneffective";
+                                    ExitMessage = "Jamming inneffective.";
                                     ctx.beginPath();
                                     ctx.strokeStyle = "red";
                                     ctx.lineWidth = 3;
@@ -1099,6 +1105,7 @@ function ShowData(){
 
 var FirstJSON;
 
+
 function SetBGColor(row, col, color){
     var table = document.getElementById('data-table');
     var row = table.rows[row+1];
@@ -1116,8 +1123,8 @@ function ParseXLSXFile(workbook){
     current_sheet_html = XLSX.utils.sheet_to_html(firstworksheet).replace("<table", '<table id="data-table" border="1"');
     
     document.getElementById('data-table').outerHTML = current_sheet_html;
-    //document.getElementById('data-table').hidden = "true";
-    //document.getElementById('show-data-btn').textContent = "Show Table";
+    document.getElementById('data-table').hidden = "true";
+    document.getElementById('show-data-btn').textContent = "Show Table";
 
     FirstJSON = XLSX.utils.sheet_to_json(firstworksheet, {defval:"0"});
     var i, r, c, str;
@@ -1507,7 +1514,7 @@ function StartSimulation(partialstep = 0.1){
     }
     else{
         //else, do a result message: no flight plan!
-        ExitMessage = "No First Package Selected";
+        ExitMessage = "No First Package Selected.";
         b_showresults = true;
         b_success = false;
         b_simulating = false;
@@ -1531,7 +1538,7 @@ function DoSimulationStep(){
         b_simulating = false;
         b_showresults = true;
         b_success = true;
-        ExitMessage = "Simulation Complete";
+        ExitMessage = "Simulation Complete.";
         var deduction = 0;
         for(var p = 0; p < NUMSTRIKES; p++){
             for(var shot = 0; shot < AHARMQTY[p]; shot++){
@@ -1541,7 +1548,7 @@ function DoSimulationStep(){
             }
         }
         if(deduction > 0){
-            ExitMessage += " "+ (deduction.toString()) + " points wil be deducted for HARM targeting";
+            ExitMessage += " "+ (deduction.toString()) + " points wil be deducted for HARM targeting.";
         }
         UpdateCanvas();
         return; //UpdateCanvas has an asynchronous call and this would remain on the stack. leave this function
@@ -1555,7 +1562,7 @@ function DoSimulationStep(){
                 SetTabToPackage();
             }
             else{
-                ExitMessage = "Oops, no second package (cannot repeat a strike either)";
+                ExitMessage = "Oops, no second package (cannot repeat a strike either).";
                 HaltSimulation();
                 UpdateCanvas();
                 return; //UpdateCanvas has an asynchronous call and this would remain on the stack. leave this function
@@ -1592,7 +1599,7 @@ function DoSimulationStep(){
 }
 function HaltSimulation(){
     console.log("Halted");
-    ExitMessage += " Halted";
+    ExitMessage += " Simulation Ended.";
     if(b_simulating == true){
         clearInterval(v_interval);
     }
@@ -1758,7 +1765,7 @@ function GenerateOutputFile(alloutmode = false){
     for(c = 0; c < bigcols; c++) data[0][c] = "Col"+c.toString();
     //Names:
     console.log(NameRow);
-    data[NameRow-2][0] = "Student Names:";
+    data[NameRow-2][0] = "Student Name(s):";
     data[NameRow-1][1] = "Last:";
     data[NameRow-1][2] = "First:";
     for(r = 0; r < STUDENTSPERGROUP; r++){
@@ -1767,7 +1774,7 @@ function GenerateOutputFile(alloutmode = false){
         data[NameRow+r][2] = A0StudentNames[r][1];
     }
     //Table 1
-    data[Table1CommRangeRow-2][0]="Table 1: Radio to Radio Communication Range (km)";
+    data[Table1CommRangeRow-2][0]="Table 1: Radio-Type to Radio-Type Power-Range (km)";
     for(c = 0; c < NUMSAMTYPES; c++) data[Table1CommRangeRow-1][c+1]="Type "+ASAMNAMES[c].toString();
     for(r = 0; r < NUMSAMTYPES; r++){
         data[Table1CommRangeRow+r][0] = "Type "+ASAMNAMES[r].toString();
@@ -1778,7 +1785,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 2
-    data[Table2VisibilityRow-2][0]="Table 2: Site to Site Separation & Visibility (km)";
+    data[Table2VisibilityRow-2][0]="Table 2: Site-to-Site Separation(km), LOS(km), & Visibility(YES/NO)";
     for(c = 0; c < NUMSITES; c++){
         tempstring = ASAMH[c].toString();
         data[Table2VisibilityRow-1][c+1]=tempstring+" ft Hill";
@@ -1807,7 +1814,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 3
-    data[Table3CommLinkRow-2][0] = "Table 3: Deployed IADS Communication Links (YES/NO)";
+    data[Table3CommLinkRow-2][0] = "Table 3: Site-to-Site Communication (YES/NO)";
     for(i = 0; i < NUMSITES; i++){
         tempstring = ASAMH[i].toString();
         tempstring += " ft hill w/"+ASAMNAMES[ASAMTYPE[i]];
@@ -1831,7 +1838,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 4
-    data[Table4PowerRangeRow-2][0] = "Table 4: RADAR to Aircraft Detection Range (km)";
+    data[Table4PowerRangeRow-2][0] = "Table 4: RADAR to Aircraft to RADAR Power-Range (km)";
     for(i = 0; i < NUMSAMTYPES; i++) data[Table4PowerRangeRow+i][0] = "Type "+ASAMNAMES[i];
     for(i = 0; i < NUMSTRIKES; i++) data[Table4PowerRangeRow-1][1+i] = ASTRIKENAMES[i];
     for(r = 0; r <  NUMSAMTYPES; r++){
@@ -1841,7 +1848,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 5
-    data[Table5RADARLOSRow-2][0] = "Table 5: Site to Aircraft Visibility (km)";
+    data[Table5RADARLOSRow-2][0] = "Table 5: Site to Aircraft LOS Range (km)";
     for(i = 0; i < NUMSTRIKES; i++) data[Table5RADARLOSRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSITES; i++)   data[Table5RADARLOSRow+i][0]   = ASAMH[i].toString() + " ft Hill";
     for(r = 0; r < NUMSITES; r++){
@@ -1851,7 +1858,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 6
-    data[Table6RADARdetRow-2][0] = "Table 6: Deployed IADS Aircraft Detection Range (km)";
+    data[Table6RADARdetRow-2][0] = "Table 6: Site's Detection Range of Aircraft (km)";
     for(i = 0; i < NUMSTRIKES; i++) data[Table6RADARdetRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSITES; i++)   data[Table6RADARdetRow+i][0]   = ASAMH[i].toString() + " ft Hill w/ "+ASAMNAMES[ASAMTYPE[i]];
     for(r = 0; r < NUMSITES; r++){
@@ -1861,7 +1868,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 7  Table 7: Burn-Through Range (km)
-    data[Table7BurnRow-2][0] = "Table 7: RADAR Burn-Through Range (km)";
+    data[Table7BurnRow-2][0] = "Table 7: RADAR Burn-Through Power-Range (km)";
     for(i = 0; i < NUMSTRIKES; i++) data[Table7BurnRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSAMTYPES; i++)   data[Table7BurnRow+i][0] = "Type "+ASAMNAMES[i];
     for(r = 0; r < NUMSAMTYPES; r++){
@@ -1871,7 +1878,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 8: RADAR Warning Receiver Range (km) by Power
-    data[Table8RWRRow-2][0] = "Table 8: Aircraft RWR Range (km)";
+    data[Table8RWRRow-2][0] = "Table 8: Aircraft RWR Power-Range (km)";
     for(i = 0; i < NUMSTRIKES; i++) data[Table8RWRRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSAMTYPES; i++)   data[Table8RWRRow+i][0] = "Type "+ASAMNAMES[i];
     for(r = 0; r < NUMSAMTYPES; r++){
@@ -1881,7 +1888,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 9: Flight Plans
-    data[Table9FPlanRow-2][0] = "Table 9: Flight Plans (Fill out at least 2 columns with numbers 1..9";
+    data[Table9FPlanRow-2][0] = "Table 9: Flight Plans (Fill out at least 2 columns with numbers 1..9)";
     var letters = "ABCDEFGHIIHGFEDCBA";
     for(i = 0; i < NUMSTRIKES; i++) data[Table9FPlanRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < 18; i++) data[Table9FPlanRow+i][0] = letters.charAt(i);
@@ -1892,7 +1899,7 @@ function GenerateOutputFile(alloutmode = false){
     //    }
     //}
     //Table 10: ACO, ATO Data
-    data[Table10OrdersRow][0] = "Table 10: Orders List (Specify N for None, C for Conventional, M for Mixed, or S for Stealth";
+    data[Table10OrdersRow][0] = "Table 10: Orders List (Specify N for None, C for Conventional, M for Mixed, or S for Stealth)";
     data[Table10OrdersRow+1][0] = "First Strike:";
     data[Table10OrdersRow+2][0] = "Second Strike:";
     data[Table10OrdersRow+3][0] = "EW Jamming (good for inbound and outbound):";
