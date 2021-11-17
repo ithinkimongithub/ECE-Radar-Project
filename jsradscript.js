@@ -8,7 +8,7 @@
 // beware that the ^ carat symbol is XOR and not an exponential. use Math.pow(base,exp);
 //notes, not in order yet:
 const b_studentseesgrade = true; //if you want the student to see their grade each time the sim runs, set this to true. This will also
-//make the simulation use the Keyed values for ranges as opposed to what the student thinks the ranges are.
+//make the simulation use the Keyed values for ranges as opposed to what the student thinks the ranges are, as well as keyed comm links.
 /******************************************** PHYSICAL CONSTANTS ************************************************************************/
 const SOL = 300000000; //speed of light will be 3x 10 ^8 m/s, per equation sheet
 const FOURPI = 4*Math.PI;
@@ -575,6 +575,7 @@ var ContinueLoading = function () {
     ExitMessage = " ";
     //do a redraw
     UpdateCanvas();
+    DrawLegend();
 }
 //End InitGame()
 //******************************************************************* DRAWING ****************************************** */
@@ -584,6 +585,57 @@ function DrawDistWithBackground(midx, midy,distinkm, ctx, color){
     ctx.fillRect(midx-22,midy-5,65,10);
     ctx.fillStyle = color;
     ctx.fillText(distinkm.toFixed(2)+"km",midx-20,midy+5);
+}
+function LegendObject(midx, midy, ctx, color, remembercolor,which){
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    switch(which){
+        case "line": ctx.fillRect(midx-10,midy-1,20,3); break;
+        case "circle":
+            ctx.beginPath();
+            ctx.arc(midx,midy,8,0,2*Math.PI);
+            ctx.fill();
+            ctx.closePath(); break;
+        case "circumference":
+            ctx.beginPath();
+            ctx.arc(midx,midy,8,0,2*Math.PI);
+            ctx.stroke();
+            ctx.closePath(); break;
+        default: break;
+
+    }
+    ctx.fillStyle = remembercolor;
+}
+function DrawLegend(){
+    var thiscanvas = document.getElementById("legendcanvas");
+    var ctx = thiscanvas.getContext("2d");
+    ctx.fillStyle = "black";
+    ctx.font = "12px Tahoma heavy";
+    var y = 0;
+    ctx.fillText("User-Entered:",10,y+=20);
+    LegendObject(25,y-5+20,ctx,"#D55","black","line");
+    ctx.fillText("Comm Links (Table 3)",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"blue","black","circumference");
+    ctx.fillText("Detection Radius (Table 6)",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"red","black","circumference");
+    ctx.fillText("Burn-Through Radius (Table 9)",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"#F5F","black","line");
+    ctx.fillText("Flight Plan (Table 9)",50,y+=20);
+    ctx.fillText("Simulation-Driven:",10,y+=20);
+    LegendObject(25,y-5+20,ctx,"green","black","circle");
+    ctx.fillText("Active SAM Site",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"gray","black","circle");
+    ctx.fillText("Inactive Site, or Hilltop",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"orange","black","line");
+    ctx.fillText("Jammer or Cyber-Attack",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"#777","black","line");
+    ctx.fillText("Disabled Link",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"gray","black","circumference");
+    ctx.fillText("Disabled Det or Burn Radius",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"blue","black","line");
+    ctx.fillText("Entered Detection without Jamming",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"red","black","line");
+    ctx.fillText("Encountered Burn-Through",50,y+=20);
 }
 function UpdateCanvas(){
     var i;
@@ -1470,7 +1522,8 @@ function EnableAllValidSamsAndLinks(){
     }
     for(var i = 0; i < numcommlinks; i++){
         commDisabled[i] = false;
-        if(A3commlinks[i]){
+        //if student can see grade, set the links to the KEY instead of the STUDENT values to give the "sim" the keyed values.
+        if(K3commlinks[i] && b_studentseesgrade || !b_studentseesgrade && A3commlinks[i]){
             var sam1 = maplinktosam(i,false);
             var sam2 = maplinktosam(i, true);
             samdisabled[sam1] = false;

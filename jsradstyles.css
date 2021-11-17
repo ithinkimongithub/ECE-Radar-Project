@@ -202,3 +202,15 @@ body {
 .load-btn, .start-btn, .halt-btn{
     padding: 5px 5px;
 }
+
+/*******************canvas**********************/
+canvas{
+    border: 1px solid black;
+    display: block;
+    float: left;
+}
+
+.container{
+    border: 1px solid blue;
+    overflow: auto;
+}
