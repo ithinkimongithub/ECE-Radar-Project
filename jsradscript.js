@@ -148,7 +148,7 @@ const M8RADARTYPEACFTRWR = [[1,1,0],
                             [1,0,1],
                             [0,1,1]];
 const P8RADARTYPEACFTRWR = 1;
-const POINTSSUCCESS = 15;
+const POINTSSUCCESS = 16;
 const POINTSHARM = 2;
 /*********************************************************** TABLES FOR COMPUTATIONS AND ANSWER KEYS ***********************************/
 var StudentSection;
