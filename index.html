@@ -28,13 +28,14 @@ Copyright (C) 2012-present   SheetJS LLC
     <link href="jsradstyles.css" rel="stylesheet">
     <script defer src="jsradscript.js"></script>
     <script lang="javascript" src="xlsx.full.min.js"></script>
-    <title>RADAR Scenario</title>
+    <title>EM Warfare Scenario Sim</title>
 </head>
 
 <body onload="InitGame()">
     <div class="container">
-        <h1>RADAR Scenario</h1>
+        <h1>EM Warfare Scenario Simulation</h1>
         <hr />
+        <p><a href="\description.html">Description Document</a></p>
         <p><b>Directions:</b><br>
             1. Download <a href="template.xlsx">template.xlsx</a> and then "Save-As"(F12 on Windows) to make your own file, naming it "M1-Group1.xlsx" or similar.<br> 
             2. Fill in the tables, avoiding any addition or subtraction of rows or columns.<br>
@@ -86,6 +87,7 @@ Copyright (C) 2012-present   SheetJS LLC
         <!--Insructor Section of page-->
         <div id = "instr" hidden>
             <p><b>Instructor Buttons:</b><br>Press F12 to open the console.</p>
+            <button id="template-btn" onclick="GenerateSpecFile()">Create Spec Document</button><br><br>
             <button id="template-btn" onclick="GenerateOutputFile(false)">Create New Template</button><br><br>
             <div>Batch Grading: "Choose File" will open a standard Open File window. Select any number of files in the same directory, 
                 and this program will immediately get to work.

@@ -2196,3 +2196,15 @@ function SpeedUp(){
     n_instructor_speed = 0.55;
     n_simpartialstep = n_instructor_speed;
 }
+
+function GenerateSpecFile(){
+    var filename = "spec.html";
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:html;charset=utf-8,' + encodeURIComponent(htmlfeed[1]));
+    element.setAttribute('download', filename);
+    
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
