@@ -25,6 +25,19 @@ const FCOMM = 60000000; //Hz, Communications freq in use
 const FRADAR = 4500000000; //Hz, Radar freq
 const NUMSTRIKES = 3; //not configurable. Following arrays need this # of members, number of strike options to choose from
 const ASTRIKENAMES = ["Conventional_Strike", "Mixed_Strike", "Stealth_Strike"]; //text
+const TABLENAMES = [
+    "Table 1: Radio-Type to Radio-Type Power-Range (km)",
+    "Table 2: Site-to-Site Separation(km), LOS(km), & Visibility(YES/NO)",
+    "Table 3: Site-to-Site Communication (YES/NO)",
+    "Table 4: RADAR to Aircraft to RADAR Power-Range (km)",
+    "Table 5: Site to Aircraft LOS Range (km)",
+    "Table 6: Site's Detection Range of Aircraft (km)",
+    "Table 7: RADAR Burn-Through Power-Range (km)",
+    "Table 8: Aircraft RWR Power-Range (km)",
+    "Table 9: Flight Plans (Fill out at least 2 columns with numbers 1..9)",
+    "Table 10: Orders List (Specify N for None, C for Conventional, M for Mixed, or S for Stealth)",
+    "Table 11: HARM Target List (0 for None. 1...5 for a hill ordered shortest to tallest, each target costs 2 points against your grade)"
+];
 const ACOST = [30000, 35000, 55000]; //cost of each strike type, in dollars
 const ARCS = [5.5, 3.5, 0.01]; //RCS of the attacker
 const AALT = [2000, 3000, 6000]; //altitude to fly at (all altitudes in this game are MSL-Mean Sea Level), where non-hill regions are zero feet.
@@ -427,11 +440,11 @@ var displaytargetlist;
 //}
 
 var fileInput = document.getElementById("fileselector");
-fileInput.addEventListener("click", function() {
-    fileInput.value = null;
-})
 
 function InitGame() {
+    fileInput.addEventListener("click", function() {
+        fileInput.value = null;
+    })
     //if(instructor_mode == true && instructor_loaded == false){
     //        console.log("loading instr script");
     //        loadInstructorMode("instructorjsrad.js", ContinueLoading);
@@ -1823,7 +1836,7 @@ function GenerateOutputFile(alloutmode = false){
         data[NameRow+r][2] = A0StudentNames[r][1];
     }
     //Table 1
-    data[Table1CommRangeRow-2][0]="Table 1: Radio-Type to Radio-Type Power-Range (km)";
+    data[Table1CommRangeRow-2][0]=TABLENAMES[0];
     for(c = 0; c < NUMSAMTYPES; c++) data[Table1CommRangeRow-1][c+1]="Type "+ASAMNAMES[c].toString();
     for(r = 0; r < NUMSAMTYPES; r++){
         data[Table1CommRangeRow+r][0] = "Type "+ASAMNAMES[r].toString();
@@ -1834,7 +1847,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 2
-    data[Table2VisibilityRow-2][0]="Table 2: Site-to-Site Separation(km), LOS(km), & Visibility(YES/NO)";
+    data[Table2VisibilityRow-2][0]=TABLENAMES[1];
     for(c = 0; c < NUMSITES; c++){
         tempstring = ASAMH[c].toString();
         data[Table2VisibilityRow-1][c+1]=tempstring+" ft Hill";
@@ -1863,7 +1876,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 3
-    data[Table3CommLinkRow-2][0] = "Table 3: Site-to-Site Communication (YES/NO)";
+    data[Table3CommLinkRow-2][0] = TABLENAMES[2];
     for(i = 0; i < NUMSITES; i++){
         tempstring = ASAMH[i].toString();
         tempstring += " ft hill w/"+ASAMNAMES[ASAMTYPE[i]];
@@ -1887,7 +1900,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 4
-    data[Table4PowerRangeRow-2][0] = "Table 4: RADAR to Aircraft to RADAR Power-Range (km)";
+    data[Table4PowerRangeRow-2][0] = TABLENAMES[3];
     for(i = 0; i < NUMSAMTYPES; i++) data[Table4PowerRangeRow+i][0] = "Type "+ASAMNAMES[i];
     for(i = 0; i < NUMSTRIKES; i++) data[Table4PowerRangeRow-1][1+i] = ASTRIKENAMES[i];
     for(r = 0; r <  NUMSAMTYPES; r++){
@@ -1897,7 +1910,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 5
-    data[Table5RADARLOSRow-2][0] = "Table 5: Site to Aircraft LOS Range (km)";
+    data[Table5RADARLOSRow-2][0] = TABLENAMES[4];
     for(i = 0; i < NUMSTRIKES; i++) data[Table5RADARLOSRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSITES; i++)   data[Table5RADARLOSRow+i][0]   = ASAMH[i].toString() + " ft Hill";
     for(r = 0; r < NUMSITES; r++){
@@ -1907,7 +1920,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 6
-    data[Table6RADARdetRow-2][0] = "Table 6: Site's Detection Range of Aircraft (km)";
+    data[Table6RADARdetRow-2][0] = TABLENAMES[5];
     for(i = 0; i < NUMSTRIKES; i++) data[Table6RADARdetRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSITES; i++)   data[Table6RADARdetRow+i][0]   = ASAMH[i].toString() + " ft Hill w/ "+ASAMNAMES[ASAMTYPE[i]];
     for(r = 0; r < NUMSITES; r++){
@@ -1917,7 +1930,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 7  Table 7: Burn-Through Range (km)
-    data[Table7BurnRow-2][0] = "Table 7: RADAR Burn-Through Power-Range (km)";
+    data[Table7BurnRow-2][0] = TABLENAMES[6];
     for(i = 0; i < NUMSTRIKES; i++) data[Table7BurnRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSAMTYPES; i++)   data[Table7BurnRow+i][0] = "Type "+ASAMNAMES[i];
     for(r = 0; r < NUMSAMTYPES; r++){
@@ -1927,7 +1940,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 8: RADAR Warning Receiver Range (km) by Power
-    data[Table8RWRRow-2][0] = "Table 8: Aircraft RWR Power-Range (km)";
+    data[Table8RWRRow-2][0] = TABLENAMES[7];
     for(i = 0; i < NUMSTRIKES; i++) data[Table8RWRRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < NUMSAMTYPES; i++)   data[Table8RWRRow+i][0] = "Type "+ASAMNAMES[i];
     for(r = 0; r < NUMSAMTYPES; r++){
@@ -1937,7 +1950,7 @@ function GenerateOutputFile(alloutmode = false){
         }
     }
     //Table 9: Flight Plans
-    data[Table9FPlanRow-2][0] = "Table 9: Flight Plans (Fill out at least 2 columns with numbers 1..9)";
+    data[Table9FPlanRow-2][0] = TABLENAMES[8];
     var letters = "ABCDEFGHIIHGFEDCBA";
     for(i = 0; i < NUMSTRIKES; i++) data[Table9FPlanRow-1][1+i] = ASTRIKENAMES[i];
     for(i = 0; i < 18; i++) data[Table9FPlanRow+i][0] = letters.charAt(i);
@@ -1948,7 +1961,7 @@ function GenerateOutputFile(alloutmode = false){
     //    }
     //}
     //Table 10: ACO, ATO Data
-    data[Table10OrdersRow][0] = "Table 10: Orders List (Specify N for None, C for Conventional, M for Mixed, or S for Stealth)";
+    data[Table10OrdersRow][0] = TABLENAMES[9];
     data[Table10OrdersRow+1][0] = "First Strike:";
     data[Table10OrdersRow+2][0] = "Second Strike:";
     data[Table10OrdersRow+3][0] = "EW Jamming (good for inbound and outbound):";
@@ -1956,7 +1969,7 @@ function GenerateOutputFile(alloutmode = false){
     data[Table10OrdersRow+5][0] = "Cyber Attack Outbound (cannot also select inbound):";
     for(i = 0; i < 5; i++) data[Table10OrdersRow+i+1][1] = "N";
     //Table 11: HARM Target list
-    data[Table10HARMRow][0] = "Table 11: HARM Target List (0 for None. 1...5 for a hill ordered shortest to tallest, each target costs 2 points against your grade)";
+    data[Table10HARMRow][0] = TABLENAMES[10];
     data[Table10HARMRow+1][0] = "Conventional First Target:";
     data[Table10HARMRow+2][0] = "Conventional Second Target:";
     data[Table10HARMRow+3][0] = "Mixed First Target:";
@@ -2202,9 +2215,36 @@ function GenerateSpecFile(){
     var element = document.createElement('a');
     element.setAttribute('href', 'data:html;charset=utf-8,' + encodeURIComponent(htmlfeed[1]));
     element.setAttribute('download', filename);
-    
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+}
+
+function emptySlots(which){
+    var count = 0;
+    for(var i = 0; i < which.length; i++){
+        for(var j = 0; j < which[i].length; j++){
+            if(which[i][j] == 0){
+                count++;
+            }
+        }
+    }
+    return count;
+}
+function pointsAvailable(){
+    var points = 0;
+    
+}
+
+function InitDescription(){
+    var table = document.getElementById("d-grading-table");
+    for(var i = 0; i < 10; i++){
+        var row = table.insertRow(i);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var pts = 2;
+        cell1.innerHTML = TABLENAMES[i];
+        cell2.innerHTML = pts + " pts";
+    }
 }

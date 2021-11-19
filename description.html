@@ -4,12 +4,48 @@
         <meta charset="utf-8" />
         <link href="jsradstyles.css" rel="stylesheet">
         <script defer src="jsradscript.js"></script>
-        <script lang="javascript" src="xlsx.full.min.js"></script>
         <title>EM Warfare Scenario Description</title>
     </head>
-<body>
+<body onload="InitDescription()">
+    <style>
+        div.titlesection {
+            text-align: center;
+        }
+        p.header{
+            margin: auto;
+        }
+        div.intromessage{
+            background-color: lightblue;
+            padding: 10px;
+        }
+    </style>
 <div class="container">
     <h1>EM Warfare Scenario Project Description</h1>
+    <a href="index.html">Return to Simulation</a>
+    <div class="titlesection">
+    <b>
+    <p class="header">Project #3</p>
+    <p class="header">Electromagnetic Warfare</p><br>
+    <p class="header">Due: 0730L on Lesson 40</p>
+    </div>
+    <br>
+    <div class="intromessage">
+    <p> This is a GROUP PROJECT.  Your group must complete one copy of this assignment to submit for grading.
+        You may use any of the authorized resources listed below.  DO NOT copy anyone else’s work for this project.
+        You may not use or look at materials from previous semesters in any form.
+        <br><br>Authorized Resources:  For this assignment you may receive help only from any USAFA ECE 315 instructor or any student on your ECE 315 team.
+        You must include a documentation statement with each assignment in accordance with the course policy letter.
+        <br><br>NOTE: THIS IS AN EDUCATIONAL EXERCISE AND IS NOT MEANT TO REPRESENT ACTUAL AIRCRAFT OR WEAPON SYSTEM SPECIFICATIONS.
+        </p>
+    </b>
+    </div>
+    <p><b>Turn in Requirements:</b> Submit a single .xlsx file to your instructor. Your documentation statement should be in the .xlsx spreadsheet.</p>
+    <p><b>Grading:</b> This project is worth <a id="d-points-total">NA</a> points and is distributed as follows:</p>
+    <table id="d-grading-table" border="0">
+        <tbody>
+        </tbody>
+    </table>
 </div>
+
 </body>
 </html>
