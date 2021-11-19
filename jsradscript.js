@@ -444,7 +444,8 @@ var fileInput = document.getElementById("fileselector");
 function InitGame() {
     fileInput.addEventListener("click", function() {
         fileInput.value = null;
-    })
+    });
+    original_sheet_html = document.getElementById('data-table').outerHTML;
     //if(instructor_mode == true && instructor_loaded == false){
     //        console.log("loading instr script");
     //        loadInstructorMode("instructorjsrad.js", ContinueLoading);
@@ -1148,7 +1149,7 @@ function GrabJSONCell(Object, row, col){
 }
 
 var current_sheet_html;
-var original_sheet_html = document.getElementById('data-table').outerHTML;
+var original_sheet_html;
 current_sheet_html = original_sheet_html;
 
 function ShowData(){
@@ -2224,27 +2225,69 @@ function GenerateSpecFile(){
 function emptySlots(which){
     var count = 0;
     for(var i = 0; i < which.length; i++){
-        for(var j = 0; j < which[i].length; j++){
-            if(which[i][j] == 0){
+        if(which[i] == 0 || which[i] == 1){
+            if(which[i] == 0){
                 count++;
+            }
+        }
+        else{
+            for(var j = 0; j < which[i].length; j++){
+                if(which[i][j] == 0){
+                    count++;
+                }
             }
         }
     }
     return count;
 }
 function pointsAvailable(){
-    var points = 0;
-    
+    var points = [];
+    var allpoints = [
+        P1COMMTYPEPOWERRANGE,
+        P2SITESITELOS+P2SITESITEVIS,
+        P3COMMLINKS,
+        P4RADARTYPEPOWERRANGE,
+        P5SITEACFTLOS,
+        P6SITEACFTDETRANGE,
+        P7RADARTYPEACFTBURN,
+        P8RADARTYPEACFTRWR,
+    ]
+    var allmasks = [
+        M1COMMTYPEPOWERRANGE,
+        M2SITESITELOS,
+        M3COMMLINK,
+        M4RADARTYPEPOWERRANGE,
+        M5SITEACFTLOS,
+        M6SITEACFTDETRANGE,
+        M7RADARTYPEACFTBURN,
+        M8RADARTYPEACFTRWR
+    ];
+    var total = 0;
+    for(var i = 0; i < allmasks.length; i++){
+        points.push(allpoints[i]*emptySlots(allmasks[i]));
+        total += points[i];
+    }
+    points.push(POINTSSUCCESS);
+    points.push(0);
+    points.push(0);
+    total += POINTSSUCCESS;
+    points.push(total);
+    return points;
 }
 
 function InitDescription(){
     var table = document.getElementById("d-grading-table");
-    for(var i = 0; i < 10; i++){
+    var ptable = pointsAvailable();
+    var totalpts = ptable[ptable.length-1];
+    document.getElementById("d-points-total").textContent = totalpts.toString();
+    for(var i = 0; i < 11; i++){
         var row = table.insertRow(i);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
-        var pts = 2;
-        cell1.innerHTML = TABLENAMES[i];
+        var pts = ptable[i];
+        var shortname = TABLENAMES[i].split('(')[0];
+        cell1.innerHTML = shortname;
         cell2.innerHTML = pts + " pts";
+        if(pts == 0) cell2.innerHTML = "";
     }
 }
