@@ -50,7 +50,9 @@ Copyright (C) 2012-present   SheetJS LLC
         <hr />
         <p><b>Simulation:</b></p>
         <p>This submission is worth <a id="studentscore">(unspecified. Run Sim to score)</a> points.</p>
-        <div>Watch the simulation and see if what you've planned can work. A score will also be provided.</div>
+        <div>Watch the simulation and see if what you've planned can work.
+            The map will show your range rings but missile shots will represent what the grader knows the range to be.
+            A score will also be provided.</div>
         <div class="control-bar">
             <button id="start-btn" onclick="StartSimulation(0.1)" disabled>Start</button>
             <button id="halt-btn" onclick="HaltSimulation()" disabled>Stop</button>
@@ -83,10 +85,12 @@ Copyright (C) 2012-present   SheetJS LLC
         <hr />
         <!--Insructor Section of page-->
         <div id = "instr" hidden>
-            <p><b>Instructor Buttons:</b></p>
+            <p><b>Instructor Buttons:</b><br>Press F12 to open the console.</p>
+            <button id="template-btn" onclick="GenerateOutputFile(true)" disabled>Make Answer Key</button><br><br>
             <button id="template-btn" onclick="GenerateOutputFile(false)">Create New Template</button><br><br>
-            <div>Batch Grading: "Choose File" will open a standard Open File window. Select any number of files in the same directory, and this program will immediately get to work.
-                Look for info in the console log (to show the console press F12 or Ctrl-Shift-J).</div>
+            <div>Batch Grading: "Choose File" will open a standard Open File window. Select any number of files in the same directory, 
+                and this program will immediately get to work.
+            </div>
             <input type="file" id="batch-file-input" onchange="BatchGradeFiles()" accept=".xlsx" multiple><br><br>
             <button id="show-data-btn" onclick="SpeedUp()">Speed Up</button><br><br>
             <button id="template-btn" onclick="SaveGradesToFile()">Save Grades in xlsx</button><br><br>

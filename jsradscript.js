@@ -618,14 +618,16 @@ function DrawLegend(){
     LegendObject(25,y-5+20,ctx,"blue","black","circumference");
     ctx.fillText("Detection Radius (Table 6)",50,y+=20);
     LegendObject(25,y-5+20,ctx,"red","black","circumference");
-    ctx.fillText("Burn-Through Radius (Table 9)",50,y+=20);
+    ctx.fillText("Burn-Through Radius (Table 7)",50,y+=20);
     LegendObject(25,y-5+20,ctx,"#F5F","black","line");
     ctx.fillText("Flight Plan (Table 9)",50,y+=20);
     ctx.fillText("Simulation-Driven:",10,y+=20);
     LegendObject(25,y-5+20,ctx,"green","black","circle");
     ctx.fillText("Active SAM Site",50,y+=20);
+    LegendObject(25,y-5+20,ctx,"#555","black","circle");
+    ctx.fillText("Inactive SAM Site",50,y+=20);
     LegendObject(25,y-5+20,ctx,"gray","black","circle");
-    ctx.fillText("Inactive Site, or Hilltop",50,y+=20);
+    ctx.fillText("Hilltop",50,y+=20);
     LegendObject(25,y-5+20,ctx,"orange","black","line");
     ctx.fillText("Jammer or Cyber-Attack",50,y+=20);
     LegendObject(25,y-5+20,ctx,"#777","black","line");
@@ -1712,8 +1714,10 @@ function cleardatafeed(){
             datafeed[i][j] = "";
         }
     }
+    htmlfeed[i] = "";
 }
 let datafeed = new Array(FEEDROWS);
+let htmlfeed = new Array(FEEDROWS);
 for(var t = 0; t < FEEDROWS; t++){
     datafeed[t] = new Array(FEEDCOLS);
     datafeed[0][0] = "Filename";
@@ -2021,7 +2025,7 @@ function ScoreCurrentFile(){
                 studentvalue = A1CommTypePowerRange[r][c];
                 if(CloseEnough(correctvalue,studentvalue)){
                     score += P1COMMTYPEPOWERRANGE;
-                    console.log("table1+");
+                    //console.log("table1+");
                 }
                 else{
                     feedback[1-1]+=feedbackmessage(1,r,c,correctvalue,studentvalue);
@@ -2034,7 +2038,7 @@ function ScoreCurrentFile(){
                     studentvalue = A2SiteSiteVIS[r][c];
                     if(correctvalue == studentvalue){
                         score += P2SITESITEVIS;
-                        console.log("table2+");
+                        //console.log("table2+");
                     }
                     else{
                         feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
@@ -2046,7 +2050,7 @@ function ScoreCurrentFile(){
                     studentvalue = A2SiteSiteLOS[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P2SITESITELOS;
-                        console.log("table2LOS+");
+                        //console.log("table2LOS+");
                     }
                     else{
                         feedback[2-1]+=feedbackmessage(2,r,c,correctvalue,studentvalue);
@@ -2060,7 +2064,7 @@ function ScoreCurrentFile(){
                     studentvalue = A4RADARTypePowerRange[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P4RADARTYPEPOWERRANGE;
-                        console.log("table4+");
+                        //console.log("table4+");
                     }
                     else{
                         feedback[4-1]+=feedbackmessage(4,r,c,correctvalue,studentvalue);
@@ -2072,7 +2076,7 @@ function ScoreCurrentFile(){
                     studentvalue = A7RADARTypeAcftBurn[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P7RADARTYPEACFTBURN;
-                        console.log("table7+");
+                        //console.log("table7+");
                     }
                     else{
                         feedback[7-1]+=feedbackmessage(7,r,c,correctvalue,studentvalue);
@@ -2084,7 +2088,7 @@ function ScoreCurrentFile(){
                     studentvalue = A8RADARTypeAcftRaw[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P8RADARTYPEACFTRWR;
-                        console.log("table8+");
+                        //console.log("table8+");
                     }
                     else{
                         feedback[8-1]+=feedbackmessage(8,r,c,correctvalue,studentvalue);
@@ -2098,7 +2102,7 @@ function ScoreCurrentFile(){
                     studentvalue = A5SiteAcftLOS[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P5SITEACFTLOS;
-                        console.log("table5+");
+                        //console.log("table5+");
                     }
                     else{
                         feedback[5-1]+=feedbackmessage(5,r,c,correctvalue,studentvalue);
@@ -2110,7 +2114,7 @@ function ScoreCurrentFile(){
                     studentvalue = A6SiteAcftDetRange[r][c];
                     if(CloseEnough(correctvalue,studentvalue)){
                         score += P6SITEACFTDETRANGE;
-                        console.log("table6+");
+                        //console.log("table6+");
                     }
                     else{
                         feedback[6-1]+=feedbackmessage(6,r,c,correctvalue,studentvalue);
@@ -2127,7 +2131,7 @@ function ScoreCurrentFile(){
             //console.log(checked,studentvalue,correctvalue);
             if(correctvalue == studentvalue){
                 score += P3COMMLINKS;
-                console.log("table3+");
+                //console.log("table3+");
             }
             else{
                 feedback[3-1]+="("+(maplinktosam(i,false)+1).toString()+","+(maplinktosam(i,true)+1).toString()+") is incorrect. ";
@@ -2140,7 +2144,7 @@ function ScoreCurrentFile(){
                 feedback[8] += POINTSHARM.toString() + " deducted for HARM shot. ";
                 //penalize whether fired or not. :\
                 score -= POINTSHARM;
-                console.log("harm-");
+                //console.log("harm-");
             }
         }
     }
@@ -2152,7 +2156,7 @@ function ScoreCurrentFile(){
     else
         currentfilename = studentsfile.name;
     console.log(currentfilename);
-    console.log(feedback);
+    //console.log(feedback);
     //push to datafeed for eventual output
     for(var stu = 0; stu < STUDENTSPERGROUP; stu++){
         var thisrow = 1+stu+whichfiletograde*STUDENTSPERGROUP;
@@ -2163,6 +2167,7 @@ function ScoreCurrentFile(){
         for(var cats = 0; cats < feedback.length; cats++ ){
             datafeed[thisrow][cats+4] = feedback[cats];
         }
+        htmlfeed[thisrow] = document.getElementById("data-table").outerHTML;
     }
     whichfiletograde += 1;
     if(whichfiletograde < howmanyfilesarethere){
