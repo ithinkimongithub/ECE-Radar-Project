@@ -214,3 +214,8 @@ canvas{
     border: 1px solid blue;
     overflow: auto;
 }
+
+/*************tables    ************************/
+table, th, td {
+    border-collapse: collapse;
+}

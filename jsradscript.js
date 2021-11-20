@@ -60,7 +60,7 @@ const ACOMMPR = [0.000000001, 0.000000001, 0.000000001]; //P_R minimum in Watts 
 const ARADG = [3500, 4000, 4500]; //Gain of Radar system
 const ARADPT = [8000, 9000, 10000]; //P_T of Radar system
 const ARADPR = [0.000000000000001, 0.000000000000001, 0.000000000000001 ]; //P_R minimum of Radar system
-const ARADSNR = [0.0001, 0.0001,0.0001]; //Minimum SNR of Radar system, where noise is from opposing jammer
+const ARADSNR = [0.0001, 0.0001, 0.0001]; //Minimum SNR of Radar system, where noise is from opposing jammer
 //if you order the hills from shortest to highest it makes referencing tables faster
 //but the order they show up here is the order they'll show up in every table
 // so unique is not required but helpful since there are no names
@@ -2290,4 +2290,84 @@ function InitDescription(){
         cell2.innerHTML = pts + " pts";
         if(pts == 0) cell2.innerHTML = "";
     }
+    var mpqradiotable = document.getElementById("mpqradiotable");
+    for(var i = 0; i < NUMSAMTYPES; i++){
+        var row = mpqradiotable.insertRow();
+
+        var cell0 = row.insertCell();
+        var cell1 = row.insertCell();
+        var cell2 = row.insertCell();
+        var cell3 = row.insertCell();
+        var cell4 = row.insertCell();
+
+        cell0.innerHTML = ASAMNAMES[i];
+        cell1.innerHTML = FCOMM/1000000+" MHz";
+        cell2.innerHTML = ACOMMG[i];
+        cell3.innerHTML = ACOMMPT[i]+" W";
+        cell4.innerHTML = ACOMMPR[i]*1000000000+" nW";
+    }
+    var mpqradartable = document.getElementById("mpqradartable");
+    for(var i = 0; i < NUMSAMTYPES; i++){
+        var row = mpqradartable.insertRow();
+        
+        var cell0 = row.insertCell();
+        var cell1 = row.insertCell();
+        var cell2 = row.insertCell();
+        var cell3 = row.insertCell();
+        var cell4 = row.insertCell();
+        var cell5 = row.insertCell();
+
+        cell0.innerHTML = ASAMNAMES[i];
+        cell1.innerHTML = FRADAR/1000000000+" GHz";
+        cell2.innerHTML = ARADG[i];
+        cell3.innerHTML = ARADPT[i]/1000+" kW";
+        cell4.innerHTML = ARADPR[i]*1000000000000000+" fW";
+        cell5.innerHTML = ARADSNR[i];
+
+    }
+    var acftcapstable = document.getElementById("acftcapstable");
+    var compositions = ["1xEA-18G + 2xF-15E","1xF-16CJ+2xF-35","2xF-22"];
+    for(var i = 0; i < NUMSTRIKES; i++){
+        var row = acftcapstable.insertRow();
+        var cell0 = row.insertCell();
+        var cell1 = row.insertCell();
+        var cell2 = row.insertCell();
+        var cell3 = row.insertCell();
+        var cell4 = row.insertCell();
+        var cell5 = row.insertCell();
+        cell0.innerHTML = ASTRIKENAMES[i].replace("_"," ");
+        cell1.innerHTML = compositions[i];
+        cell2.innerHTML = ARCS[i]+" m<sup>2</sup>";
+        cell3.innerHTML = AALT[i]+" ft";
+        cell4.innerHTML = "YES";
+        if(i == 2) cell4.innerHTML = "NO";
+        cell5.innerHTML = "$"+ACOST[i];
+    }
+    var acftrwrtable = document.getElementById("acftrwrtable");
+    for(var i = 0; i < NUMSTRIKES; i++){
+        var row = acftrwrtable.insertRow();
+        var cell0 = row.insertCell();
+        var cell1 = row.insertCell();
+        var cell2 = row.insertCell();
+        var cell3 = row.insertCell();
+
+        cell0.innerHTML = ASTRIKENAMES[i].replace("_"," ");
+        cell1.innerHTML = FRADAR/1000000000+" GHz";
+        cell2.innerHTML = ARWRG[i];
+        cell3.innerHTML = ARWRPR[i]*1000000000+" nW";
+    }
+    var acftjammertable = document.getElementById("acftjammertable");
+    for(var i = 0; i < NUMSTRIKES; i++){
+        var row = acftjammertable.insertRow();
+        var cell0 = row.insertCell();
+        var cell1 = row.insertCell();
+        var cell2 = row.insertCell();
+        var cell3 = row.insertCell();
+
+        cell0.innerHTML = ASTRIKENAMES[i].replace("_"," ");
+        cell1.innerHTML = FRADAR/1000000000+" GHz";
+        cell2.innerHTML = AJAMGT[i];
+        cell3.innerHTML = AJAMPT[i]+" W";
+    }
+    console.log("fin");
 }

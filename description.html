@@ -30,10 +30,9 @@
     </div>
     <br>
     <div class="intromessage">
-    <p> This is a GROUP PROJECT.  Your group must complete one copy of this assignment to submit for grading.
-        You may use any of the authorized resources listed below.  DO NOT copy anyone else’s work for this project.
+    <p> This is an INDIVIDUAL PROJECT. You may use any of the authorized resources listed below. DO NOT copy anyone else’s work for this project.
         You may not use or look at materials from previous semesters in any form.
-        <br><br>Authorized Resources:  For this assignment you may receive help only from any USAFA ECE 315 instructor or any student on your ECE 315 team.
+        <br><br>Authorized Resources: For this assignment you may receive help only from any USAFA ECE 315 instructor.
         You must include a documentation statement with each assignment in accordance with the course policy letter.
         <br><br>NOTE: THIS IS AN EDUCATIONAL EXERCISE AND IS NOT MEANT TO REPRESENT ACTUAL AIRCRAFT OR WEAPON SYSTEM SPECIFICATIONS.
         </p>
@@ -46,6 +45,107 @@
         </tbody>
     </table>
     <i>Tables 9, 10, and 11 are graded together, all-or-none.</i>
+    <p><b>Description:</b></p>
+    <p>The mission is to ingress northbound through a valley (map is oriented North-up) to destroy the enemy targets (not depicted), 
+        which are located beyond the valley and then egress southbound through the same valley.
+        In this 9 × 9 grid, each square is 60 km × 60 km. Eventually you will specify flight plans according to alpha-numeric notation that are shown on the 
+        edges of the map: “A1” is the lower-left corner, and “I9” is the upper-right corner.
+        <br><br>There are three aircraft strike package options. Targeting has already determined that any two strike packages used in 
+        succession will meet mission requirements, and they advise that there will not be enough time to reuse a single package.
+        Additionally, only one package at a time may be in the combat zone, which prevents sending both packages simultaneously.
+        Your task is to determine the threat scenario, select two strike packages, employ appropriate countermeasures (if necessary),
+        and build the flight plans. You have a budget of $100,000 to plan and carry out your attack.
+        <br><br>The enemy has three different types of Surface-to-Air Missile (SAM) systems.
+        Each system is comprised of a RADAR for detecting and engaging airborne targets and a radio to communicate with their HQ.
+        The locations of the SAM systems are known (e.g. MPQ-32) and are depicted along with the heights of hills (circles) on Figure 1. 
+        Not all hills are occupied. The analysis of a communication problem requires checking whether there is line-of-sight between the transmitter and receiver, 
+        and whether there is sufficient power reaching the receiver. <b>Table 1</b> considers every possible pairing of SAM system to SAM system. 
+        The specifications for each SAM site radio is used to determine the maximum radio-to-radio communication range. 
+        <b>Table 2</b> considers every possible pairing of any two hills; the table provides a distance and you are to determine whether or not 
+        two hills are within line-of-sight with each other. In <b>Table 3</b>, every pairing of SAM site to SAM site is considered.
+        Using Tables 1 and 2, determine whether the sites can establish communications and enter YES/NO into Table 3.
+        <br><br>Using <b>Table 3</b>, draw a picture of the enemy Integrated Air Defense System (IADS) by drawing links between sites and eliminating sites which are alone.
+        According to enemy doctrine, if a site cannot establish radio contact with any other site, then it will not fire any SAM’s.
+        The included software will draw this for you.
+        <br><br>To formulate the ingress and egress plans, you will next need to analyze these RADAR systems,
+        the terrain, and the aircraft to visualize the threat area. The strike packages will be flying at a constant altitude across the valley
+        according to their package type, and they will not adjust for hills. Analyze the detection ranges of the various aircraft packages by the
+        various SAM sites taking into account both line-of-sight and sufficient return power. In <b>Table 4</b>, consider every pairing of aircraft type
+        and RADAR type, and based solely upon sufficient return power, compute the maximum range at which the SAM site could potentially detect the
+        aircraft (aircraft within a package will be sufficiently spaced, so use the largest RCS within the package). In <b>Table 5</b>, consider every pairing
+        of a SAM site’s height to an aircraft’s height and compute the maximum line-of-sight visibility range. In <b>Table 6</b>, combine the previous two tables
+        to determine the actual maximum detection ranges between the sites and all strike package options.
+        <br><br>Aircraft are also equipped with jamming pods which can be employed by a strike package for its entire ingress and egress. However, only one
+        package can employ jamming as this strategy limits enemy intelligence gathering. With jamming employed, aircraft may safely transit the detection
+        range of a SAM site, but cannot penetrate its “burn-through” range. In <b>Table 7</b>, compute the burn-through range for every RADAR type and aircraft
+        jammer type. As before, use the largest RCS of the package. Additionally, you should note that line-of-sight is not a limiting factor for this parameter.
+        <br><br>You will also verify that our aircraft strike packages are able to detect the presence of any enemy SAM sites through the use of RADAR Warning Receivers
+        (RWR). In <b>Table 8</b>, compute the maximum range of each strike package’s RWR in relation to each type of RADAR. All values should be greater than any
+        line-of-sight value identified in Table 5, verifying that line-of-sight is the limiting factor here.
+        <br><br>Having completed Tables 1 through 8, your team should be able to visualize the enemy IADS (using the included software) by showing which sites are
+        connected and the threat radius of every SAM site, taking into account the RADAR type, the hill elevation, aircraft RCS, and aircraft altitude.
+        Choose two packages and create ingress and egress flight plans for each. In <b>Table 9</b> fill out flight plans. In this grid-based valley, the ingress
+        begins at row A and ends at row I. Specify the flight plan by providing a series of numbers between 1 and 9. The start at row A can be anywhere in 1..9,
+        and then each step can be either straight ahead in the same column, or 45-degrees diagonally to the neighboring column. The ingress finish at row I can
+        be anywhere on that row as well. Continue in the same table with the egress plan, going from row I to row A. As a limitation from HQ, a package cannot
+        retrace its own flight plan, but it can retrace any portion of the other package. For the southbound transit, starting at row I, choose any location
+        and proceed diagonally (45 degrees) or vertically down to the egress finish at row A. In <b>Table 10</b>, identify which package is first, and which is second.
+        <br><br>Flying around every threat ring may not be possible, so you have three alternate methods of countering enemy RADAR: a cyber attack, SEAD, or DEAD.
+        <br><br>In the cyber attack, the entire enemy IADS will be shut down, but the attack will only be effective for enough time to transit the valley once,
+        either on an ingress or an egress. Additionally, there is an associated $10,000 “cost” for the cyber attack. If employed, choose whether it will occur 
+        on an ingress or egress, and on which package.
+        <br><br>For Suppression of Enemy Air Defenses (SEAD), only one package can employ jamming, but can do so for both its ingress and egress.
+        In <b>Table 10</b> line 3, specify which package will be allowed to employ jamming or leave as-is.
+        <br><br>The last method, Destruction of Enemy Air Defenses (DEAD), is an option of last resort. There is a <b>2 pt penalty</b> against your project
+        grade for every target added to this list. In <b>Table 11</b>, specify the target(s) by entering a number of 1..5 which represents the sites in
+        rank-order by height from shortest to tallest. A 0 (zero) represents no target. Your aircraft strike packages will determine an appropriate
+        firing location while following your flight plan, but they are at a greater risk of being fired upon if closer to other sites.
+        As mentioned in the communications doctrine, knocking out a single critical site can disable other sites because sites that are “alone” will not fire.
+    </p>
+    <p><b>Intel: </b><i>This information is also found within the <a href="template.xlsx">template.xlsx</a> at the bottom of the sheet.</i></p>
+    <table id="mpqradiotable" border="1">
+        <caption>SAM Site Radio Intel:</caption>
+        <tbody><tr><th>Type</th><th>Frequency</th><th>Gain</th>
+            <th>P<sub>T</sub></th><th>P<sub>R</sub></th></tr></tbody>
+    </table>
+    <br>
+    <table id="mpqradartable" border="1">
+        <caption>SAM Site Radar Intel:</caption>
+        <tbody><tr><th>Type</th><th>Frequency</th><th>Gain</th>
+            <th>P<sub>T</sub></th><th>P<sub>R</sub></th><th>SNR<sub>req</sub></th></tr></tbody>
+    </table>
+    <br>
+    <table id="acftcapstable" border="1">
+        <caption>Aircraft Package Options:</caption>
+        <tbody><tr>
+            <th>Type</th>
+            <th>Composition</th>
+            <th>RCS</th>
+            <th>Altitude</th>
+            <th>HARM Capability</th>
+            <th>Cost</th>
+        </tr></tbody>
+    </table>
+    <br>
+    <table id="acftrwrtable" border="1">
+        <caption>Aircraft RWR Intel:</caption>
+        <tbody><tr>
+            <th>Type</th>
+            <th>Frequency</th>
+            <th>Gain</th>
+            <th>P<sub>R</sub></th>
+        </tr></tbody>
+    </table>
+    <br>
+    <table id="acftjammertable" border="1">
+        <caption>Aircraft Jammer Intel:</caption>
+        <tbody><tr>
+            <th>Type</th>
+            <th>Frequency</th>
+            <th>Gain</th>
+            <th>P<sub>T</sub></th>
+        </tr></tbody>
+    </table>
 </div>
 
 </body>
