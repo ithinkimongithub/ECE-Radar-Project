@@ -555,7 +555,7 @@ var ContinueLoading = function () {
     }
     //initialize variables for airplane icon, comm links grid, comm links on, and then do a draw
     myAirplane = new Image(30,30);
-    myAirplane.src = "Airplane.gif";
+    myAirplane.src = "airplane.gif";
     //sim status
     b_zipping = false;
     b_loaded = false; //set to true after a successful file load
