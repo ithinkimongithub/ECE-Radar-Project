@@ -2044,10 +2044,16 @@ function GenerateOutputFile(alloutmode = false){
 //Not using events. end of simulation will trigger ScoreCurrentFile which restarts the loop
 var zipfile;
 var b_zipping;
+var bordercolapse = '<style>table, th, td {border-collapse: collapse;}</style>';
+var headertobody = '<html><head><meta charset="utf-8"/><title>Export</title></head>'+bordercolapse+'<body>';
+var closeitup = '</body></html>';
+var indexfilecontent;
+
 function BatchGradeFiles(){ //only called  at beginning of grading sequence.
     cleardatafeed();
     b_zipping = true;
     zipfile = new JSZip();
+    indexfilecontent = headertobody;
     b_gradermode = true;
     filestograde = event.target.files;
     howmanyfilesarethere = filestograde.length;
@@ -2244,13 +2250,12 @@ function ScoreCurrentFile(){
         }
         if(b_zipping){
             document.getElementById('data-table').style.display = "block";
-            var bordercolapse = '<style>table, th, td {border-collapse: collapse;}</style>';
             var p_score = '<p><b>Score: '+score+' pts. Simulation Report: '+ExitMessage+"</b></p>";
-            var coloredhtml = 
-                '<html><head><meta charset="utf-8"/><title>SheetJS Table Export</title></head>'+bordercolapse+'<body>'+p_score+document.getElementById('data-table').outerHTML+
-                '</body></html>';
+            var htmlcontent = headertobody+p_score+document.getElementById('data-table').outerHTML+closeitup;
             document.getElementById('data-table').style.display = "none";
-            zipfile.file(StudentSection+"-"+A0StudentNames[stu][0]+whichfiletograde+".html",coloredhtml);
+            var htmlfilename = StudentSection+"-"+A0StudentNames[stu][0]+whichfiletograde+".html";
+            zipfile.file(htmlfilename,htmlcontent);
+            indexfilecontent+="<br><a href="+htmlfilename+">"+htmlfilename+"</a> score: "+score+" exit: "+ExitMessage;
         }
     }
     whichfiletograde += 1;
@@ -2264,6 +2269,9 @@ function ScoreCurrentFile(){
         isthereafiletograde = false;
         b_gradermode = false;
         b_zipping = false;
+        indexfilecontent+=closeitup;
+        zipfile.file("contents.html",indexfilecontent);
+        zipfile.file("readme.txt","1. Unzip this archive. 2. Open contents.html");
         document.getElementById("savexlsx-btn").disabled = false;
         document.getElementById("savehtml-btn").disabled = false;
     }
