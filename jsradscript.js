@@ -557,6 +557,7 @@ var ContinueLoading = function () {
     myAirplane = new Image(30,30);
     myAirplane.src = "Airplane.gif";
     //sim status
+    b_zipping = false;
     b_loaded = false; //set to true after a successful file load
     b_simulating = false;
     b_jamactive = false;
@@ -1184,7 +1185,7 @@ function ParseXLSXFile(workbook){
     current_sheet_html = XLSX.utils.sheet_to_html(firstworksheet).replace("<table", '<table id="data-table" border="1"');
     
     document.getElementById('data-table').outerHTML = current_sheet_html;
-    document.getElementById('data-table').style.display = "none"
+    document.getElementById('data-table').style.display = "none";
 
     FirstJSON = XLSX.utils.sheet_to_json(firstworksheet, {defval:"0"});
     var i, r, c, str;
@@ -1211,6 +1212,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A1CommTypePowerRange[r][c]=f;
                 SetBGColor(Table1CommRangeRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K1CommTypePowerRange[r][c],f))
+                        SetBGColor(Table1CommRangeRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table1CommRangeRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table1CommRangeRow-1+r,c+1, "lightgray");
@@ -1233,6 +1240,12 @@ function ParseXLSXFile(workbook){
                         A2SiteSiteVIS[r][c] = -1; //maybe this works?
                     }
                     SetBGColor(Table2VisibilityRow+3*r-1,c+1, "yellow");
+                    if(b_zipping){
+                        if(A2SiteSiteVIS[r][c]==K2SiteSiteVIS[r][c])
+                            SetBGColor(Table2VisibilityRow+3*r-1,c+1, "green");
+                        else
+                            SetBGColor(Table2VisibilityRow+3*r-1,c+1, "red");
+                    }
                 }
                 else{
                     SetBGColor(Table2VisibilityRow+3*r-1,c+1, "lightgray");
@@ -1242,6 +1255,12 @@ function ParseXLSXFile(workbook){
                     if(isNaN(f) || f < 0) f=0;
                     A2SiteSiteLOS[r][c] = f;
                     SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "yellow");
+                    if(b_zipping){
+                        if(CloseEnough(K2SiteSiteLOS[r][c],f))
+                            SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "green");
+                        else
+                            SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "red");
+                    }
                 }
                 else{
                     SetBGColor(Table2VisibilityRow+3*r+1-1,c+1, "lightgray");
@@ -1265,6 +1284,12 @@ function ParseXLSXFile(workbook){
                 A3commlinks[i] = -1; //maybe this works?
             }
             SetBGColor(Table3CommLinkRow+r-1,c+1, "yellow");
+            if(b_zipping){
+                if(A3commlinks[i]==K3commlinks[i])
+                    SetBGColor(Table3CommLinkRow+r-1,c+1, "green");
+                else
+                    SetBGColor(Table3CommLinkRow+r-1,c+1, "red");
+            }
         }
         else{
             c = maplinktosam(i,true);
@@ -1280,6 +1305,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A4RADARTypePowerRange[r][c] = f;
                 SetBGColor(Table4PowerRangeRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K4RADARTypePowerRange[r][c],f))
+                        SetBGColor(Table4PowerRangeRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table4PowerRangeRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table4PowerRangeRow-1+r,c+1, "lightgray");
@@ -1294,6 +1325,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A5SiteAcftLOS[r][c] = f;
                 SetBGColor(Table5RADARLOSRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K5SiteAcftLOS[r][c],f))
+                        SetBGColor(Table5RADARLOSRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table5RADARLOSRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table5RADARLOSRow-1+r,c+1, "lightgray");
@@ -1308,6 +1345,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A6SiteAcftDetRange[r][c] = f;
                 SetBGColor(Table6RADARdetRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K6SiteAcftDetRange[r][c],f))
+                        SetBGColor(Table6RADARdetRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table6RADARdetRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table6RADARdetRow-1+r,c+1, "lightgray");
@@ -1322,6 +1365,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A7RADARTypeAcftBurn[r][c] = f;
                 SetBGColor(Table7BurnRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K7RADARTypeAcftBurn[r][c],f))
+                        SetBGColor(Table7BurnRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table7BurnRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table7BurnRow-1+r,c+1, "lightgray");
@@ -1341,6 +1390,12 @@ function ParseXLSXFile(workbook){
                 if(isNaN(f) || f < 0) f=0;
                 A8RADARTypeAcftRaw[r][c] = f;
                 SetBGColor(Table8RWRRow-1+r,c+1, "yellow");
+                if(b_zipping){
+                    if(CloseEnough(K8RADARTypeAcftRaw[r][c],f))
+                        SetBGColor(Table8RWRRow-1+r,c+1, "green");
+                    else
+                        SetBGColor(Table8RWRRow-1+r,c+1, "red");
+                }
             }
             else{
                 SetBGColor(Table8RWRRow-1+r,c+1, "lightgray");
@@ -1731,7 +1786,9 @@ function cleardatafeed(){
     htmlfeed[i] = "";
 }
 let datafeed = new Array(FEEDROWS);
-let htmlfeed = new Array(FEEDROWS);
+let htmlfeed = [];
+let htmlfeedfilename = [];
+
 for(var t = 0; t < FEEDROWS; t++){
     datafeed[t] = new Array(FEEDCOLS);
     datafeed[0][0] = "Filename";
@@ -1985,8 +2042,12 @@ function GenerateOutputFile(alloutmode = false){
 }
 //End GenerateOutputFile()
 //Not using events. end of simulation will trigger ScoreCurrentFile which restarts the loop
-function BatchGradeFiles(){ //only called once
+var zipfile;
+var b_zipping;
+function BatchGradeFiles(){ //only called  at beginning of grading sequence.
     cleardatafeed();
+    b_zipping = true;
+    zipfile = new JSZip();
     b_gradermode = true;
     filestograde = event.target.files;
     howmanyfilesarethere = filestograde.length;
@@ -2181,7 +2242,16 @@ function ScoreCurrentFile(){
         for(var cats = 0; cats < feedback.length; cats++ ){
             datafeed[thisrow][cats+4] = feedback[cats];
         }
-        htmlfeed[thisrow] = document.getElementById("data-table").outerHTML;
+        if(b_zipping){
+            document.getElementById('data-table').style.display = "block";
+            var bordercolapse = '<style>table, th, td {border-collapse: collapse;}</style>';
+            var p_score = '<p><b>Score: '+score+' pts. Simulation Report: '+ExitMessage+"</b></p>";
+            var coloredhtml = 
+                '<html><head><meta charset="utf-8"/><title>SheetJS Table Export</title></head>'+bordercolapse+'<body>'+p_score+document.getElementById('data-table').outerHTML+
+                '</body></html>';
+            document.getElementById('data-table').style.display = "none";
+            zipfile.file(StudentSection+"-"+A0StudentNames[stu][0]+whichfiletograde+".html",coloredhtml);
+        }
     }
     whichfiletograde += 1;
     if(whichfiletograde < howmanyfilesarethere){
@@ -2193,6 +2263,9 @@ function ScoreCurrentFile(){
         //done
         isthereafiletograde = false;
         b_gradermode = false;
+        b_zipping = false;
+        document.getElementById("savexlsx-btn").disabled = false;
+        document.getElementById("savehtml-btn").disabled = false;
     }
 }
 function SaveGradesToFile(){
@@ -2370,4 +2443,10 @@ function InitDescription(){
         cell3.innerHTML = AJAMPT[i]+" W";
     }
     console.log("fin");
+}
+
+function SaveZippedHTML(){
+    zipfile.generateAsync({type:"blob"}).then(function(content){
+        saveAs(content,"archive.zip");
+    });
 }

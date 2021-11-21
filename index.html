@@ -28,6 +28,8 @@ Copyright (C) 2012-present   SheetJS LLC
     <link href="jsradstyles.css" rel="stylesheet">
     <script defer src="jsradscript.js"></script>
     <script lang="javascript" src="xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
     <title>EM Warfare Scenario Sim</title>
 </head>
 
@@ -86,15 +88,17 @@ Copyright (C) 2012-present   SheetJS LLC
         </div>
         <hr />
         <!--Insructor Section of page-->
-        <div id = "instr" hidden>
+        <div id = "instr" hidden> <!--remember to make this hidden again-->
             <p><b>Instructor Buttons:</b><br>Press F12 to open the console.</p>
             <button id="template-btn" onclick="GenerateOutputFile(false)">Create New Template</button><br><br>
+            <!--<button id="another-btn" onclick="GenerateOutputFile(true)">cheat</button><br><br>-->
             <div>Batch Grading: "Choose File" will open a standard Open File window. Select any number of files in the same directory, 
                 and this program will immediately get to work.
             </div>
             <input type="file" id="batch-file-input" onchange="BatchGradeFiles()" accept=".xlsx" multiple><br><br>
             <button id="show-data-btn" onclick="SpeedUp()">Speed Up</button><br><br>
-            <button id="template-btn" onclick="SaveGradesToFile()">Save Grades in xlsx</button><br><br>
+            <button id="savexlsx-btn" onclick="SaveGradesToFile()"disabled>Save Grades in xlsx</button><br><br>
+            <button id="savehtml-btn" onclick="SaveZippedHTML()"disabled>Save Feedback HTMLs in zip</button><br><br>
             <hr />
         </div>
         <img id="myicon" width="30" height="30" src="airplane.gif" hidden>
