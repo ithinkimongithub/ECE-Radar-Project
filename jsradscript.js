@@ -1085,6 +1085,7 @@ function LoadXLSXFile(){
     }
     studentsfile = file;
     name = file.name;
+    document.getElementById("failuremessage").hidden = false;
     reader.onload = function(event){
         var data = event.target.result;
         var workbook = XLSX.read(data, {type: 'binary'});
@@ -1097,6 +1098,7 @@ function LoadXLSXFile(){
         TurnJam(true);
         TurnFPlan(true);
         //enable the simulation buttons
+        document.getElementById("failuremessage").hidden = true;
         document.getElementById("start-btn").disabled = false;
         document.getElementById("halt-btn").disabled = false;
         document.getElementById("start-fast-btn").disabled = false;
