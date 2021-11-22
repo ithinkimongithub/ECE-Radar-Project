@@ -2276,13 +2276,15 @@ function ScoreCurrentFile(){
         //done
         isthereafiletograde = false;
         b_gradermode = false;
-        b_zipping = false;
-        indexfilecontent+=endtable;
-        indexfilecontent+=closeitup;
-        zipfile.file("contents.html",indexfilecontent);
-        zipfile.file("readme.txt","1. Unzip this archive. 2. Open contents.html");
-        document.getElementById("savexlsx-btn").disabled = false;
-        document.getElementById("savehtml-btn").disabled = false;
+        if(b_zipping){
+            b_zipping = false;
+            indexfilecontent+=endtable;
+            indexfilecontent+=closeitup;
+            zipfile.file("contents.html",indexfilecontent);
+            zipfile.file("readme.txt","1. Unzip this archive. 2. Open contents.html");
+            document.getElementById("savexlsx-btn").disabled = false;
+            document.getElementById("savehtml-btn").disabled = false;
+        }
     }
 }
 function SaveGradesToFile(){
