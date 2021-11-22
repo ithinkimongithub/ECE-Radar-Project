@@ -485,10 +485,11 @@ var ContinueLoading = function () {
         if(stu < STUDENTSPERGROUP-1)
             combinednames += ", ";
     }
+    
     //if(instructor_mode == true){ //then compute all A and K arrays in tables 1..8
         //Table 3 - Linear
         for(var i = 0; i < numcommlinks; i++){
-            A3commlinks[i] = ComputeCommLink(i);
+            //A3commlinks[i] = ComputeCommLink(i);
             K3commlinks[i] = ComputeCommLink(i);
         }
         //Table 1, 4, 7, 8 (NUMSAMTYPES, then by ..) 
@@ -496,19 +497,19 @@ var ContinueLoading = function () {
             //Table 1, by NUMSAMTYPES [3x3]
             for(var typey = 0; typey < NUMSAMTYPES; typey++){
                 K1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
-                A1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
+                //A1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
             }
             //Table 4, 7, 8 by NUMPACKAGETYPES [3x3]
             for(var p = 0; p < NUMSTRIKES; p++){
                 //Table 4
                 K4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
-                A4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
+                //A4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
                 //Table 7
                 K7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
-                A7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
+                //A7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
                 //Table 8
                 K8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
-                A8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
+                //A8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
             }
         }
         //Table 2, 5, 6 (by NUMSITES)
@@ -517,25 +518,25 @@ var ContinueLoading = function () {
             for(var sitey = 0; sitey < NUMSITES; sitey++){
                 A2SiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
                 //KSiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
-                A2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
+                //A2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
                 K2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
                 if(ComputeSiteMaxLOS(site,sitey) > ComputeSiteSeparation(site,sitey)){
-                    A2SiteSiteVIS[site][sitey] = true;
+                    //A2SiteSiteVIS[site][sitey] = true;
                     K2SiteSiteVIS[site][sitey] = true;
                 }
                 else{
-                    A2SiteSiteVIS[site][sitey] = false;
+                    //A2SiteSiteVIS[site][sitey] = false;
                     K2SiteSiteVIS[site][sitey] = false;
                 }       
             }
             //Then by Packages (Tables 5, 6) [5x3]
             for(var p = 0; p < NUMSTRIKES; p++){
                 K5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
-                A5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
+                //A5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
                 K6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
-                A6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
+                //A6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
                 //the helper arrays mean not needing to do table look-ups during drawing or testing collisions
-                ASiteAcftBurnRange[site][p] = A7RADARTypeAcftBurn[ASAMTYPE[site]][p];
+                //ASiteAcftBurnRange[site][p] = A7RADARTypeAcftBurn[ASAMTYPE[site]][p];
                 KSiteAcftBurnRange[site][p] = K7RADARTypeAcftBurn[ASAMTYPE[site]][p];
             }
         }
