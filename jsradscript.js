@@ -423,22 +423,6 @@ var combinednames;
 var totalcost;
 var displaytargetlist;
 //******************************************************************* INITIALIZATION FUNCTION ****************************************** */
-//Browsers may fail to load the instructor.js file. Troubleshoot using "async" or "defer"
-//LoadINstructorMOde is copied from:
-//https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
-//https://www.html5rocks.com/en/tutorials/speed/script-loading/
-//function ToggleInstructor(){
-//    var x = document.getElementById("instr-btn");
-//    var y = document.getElementById("instr"); //visible or hidden
-//    if(instructor_mode == false){
-//        instructor_mode = true;
-//        y.style.visibility = "visible";
-//        x.textContent = "Refresh page to undo (F5)";
-//    }
-//    //prevent toggling out of instructor and tell user to use F5
-//    InitGame();
-//}
-
 var fileInput = document.getElementById("fileselector");
 
 function InitGame() {
@@ -446,13 +430,9 @@ function InitGame() {
         fileInput.value = null;
     });
     original_sheet_html = document.getElementById('data-table').outerHTML;
-    //if(instructor_mode == true && instructor_loaded == false){
-    //        console.log("loading instr script");
-    //        loadInstructorMode("instructorjsrad.js", ContinueLoading);
-    //}
-    //else{
-        ContinueLoading();
-    //}
+    
+    ContinueLoading();
+
 }
 //function loadInstructorMode(url, callback){
 //    var head = document.head;
@@ -465,18 +445,7 @@ function InitGame() {
 //}
 var ContinueLoading = function () {
     console.log("loading game");
-    //if(instructor_mode == true){
-    //    instructor_loaded = true; //instructor.js is loaded, so set to true to prevent further loading
-    //}
-    //else{
-    //   var y = document.getElementById("instr"); //visible or hidden
-    //    y.style.visibility = "hidden";
-    //}
-    //in student mode, clear all the computation tables to zero. All values will come from the student's file.
-    //in instructor mode, compute all values and place into both the A and K arrays (displayed and keys), then when
-    //inspecting a student's file, only masked values will be placed into the simulation so that a student cannot
-    //erroneously modify other ungraded parameters of the simulation.
-    //name vector:
+    //load values into unmasked locations and zero's where masked
     combinednames = "";
     for(var stu = 0; stu < STUDENTSPERGROUP; stu++){
         A0StudentNames[stu][0] = "Last"+(stu+1).toString();
@@ -485,62 +454,89 @@ var ContinueLoading = function () {
         if(stu < STUDENTSPERGROUP-1)
             combinednames += ", ";
     }
-    
-    //if(instructor_mode == true){ //then compute all A and K arrays in tables 1..8
-        //Table 3 - Linear
-        for(var i = 0; i < numcommlinks; i++){
-            //A3commlinks[i] = ComputeCommLink(i);
-            K3commlinks[i] = ComputeCommLink(i);
+    //Table 3 - Linear
+    for(var i = 0; i < numcommlinks; i++){
+        if(M3COMMLINK[i]==1)
+            A3commlinks[i] = ComputeCommLink(i);
+        else
+            A3commlinks[i] = false;
+        K3commlinks[i] = ComputeCommLink(i);
+    }
+    //Table 1, 4, 7, 8 (NUMSAMTYPES, then by ..) 
+    for(var samtype = 0; samtype < NUMSAMTYPES; samtype++){
+        //Table 1, by NUMSAMTYPES [3x3]
+        for(var typey = 0; typey < NUMSAMTYPES; typey++){
+            K1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
+            if(M1COMMTYPEPOWERRANGE[samtype][typey]==1)
+                A1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
+            else
+                A1CommTypePowerRange[samtype][typey] = 0;
         }
-        //Table 1, 4, 7, 8 (NUMSAMTYPES, then by ..) 
-        for(var samtype = 0; samtype < NUMSAMTYPES; samtype++){
-            //Table 1, by NUMSAMTYPES [3x3]
-            for(var typey = 0; typey < NUMSAMTYPES; typey++){
-                K1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
-                //A1CommTypePowerRange[samtype][typey] = ComputeCommTypePowerRange(samtype,typey);
-            }
-            //Table 4, 7, 8 by NUMPACKAGETYPES [3x3]
-            for(var p = 0; p < NUMSTRIKES; p++){
-                //Table 4
-                K4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
-                //A4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
-                //Table 7
-                K7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
-                //A7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
-                //Table 8
-                K8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
-                //A8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
-            }
+        //Table 4, 7, 8 by NUMPACKAGETYPES [3x3]
+        for(var p = 0; p < NUMSTRIKES; p++){
+            //Table 4
+            K4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
+            if(M4RADARTYPEPOWERRANGE[samtype][p]==1)
+                A4RADARTypePowerRange[samtype][p] = ComputeRADARTypePowerRange(samtype,p);
+            else
+                A4RADARTypePowerRange[samtype][p] = 0;
+            //Table 7
+            K7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
+            if(M7RADARTYPEACFTBURN[samtype][p]==1)
+                A7RADARTypeAcftBurn[samtype][p] = ComputeRADARTypeStrikeBurn(samtype, p);
+            else
+                A7RADARTypeAcftBurn[samtype][p] = 0;
+            //Table 8
+            K8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
+            if(M8RADARTYPEACFTRWR[samtype][p]==1)
+                A8RADARTypeAcftRaw[samtype][p] = ComputeRADARTypeStrikeRWR(samtype, p);
+            else
+                A8RADARTypeAcftRaw[samtype][p] = 0;
         }
-        //Table 2, 5, 6 (by NUMSITES)
-        for(var site = 0; site < NUMSITES; site++){
-            //then by NUMSITES (Table 2) [5x5]
-            for(var sitey = 0; sitey < NUMSITES; sitey++){
-                A2SiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
-                //KSiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
-                //A2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
-                K2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
-                if(ComputeSiteMaxLOS(site,sitey) > ComputeSiteSeparation(site,sitey)){
-                    //A2SiteSiteVIS[site][sitey] = true;
-                    K2SiteSiteVIS[site][sitey] = true;
-                }
-                else{
-                    //A2SiteSiteVIS[site][sitey] = false;
-                    K2SiteSiteVIS[site][sitey] = false;
-                }       
+    }
+    //Table 2, 5, 6 (by NUMSITES)
+    for(var site = 0; site < NUMSITES; site++){
+        //then by NUMSITES (Table 2) [5x5]
+        for(var sitey = 0; sitey < NUMSITES; sitey++){
+            A2SiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
+            //KSiteSiteSEP[site][sitey] = ComputeSiteSeparation(site,sitey);
+            if(K2SiteSiteLOS[site][sitey]==1)
+                A2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
+            else
+                A2SiteSiteLOS[site][sitey] = 0;
+            K2SiteSiteLOS[site][sitey] = ComputeSiteMaxLOS(site,sitey);
+            if(ComputeSiteMaxLOS(site,sitey) > ComputeSiteSeparation(site,sitey)){
+                if(M2SITESITEVIS[site][sitey]==1)
+                    A2SiteSiteVIS[site][sitey] = true;
+                else
+                    A2SiteSiteVIS[site][sitey] = false;
+                K2SiteSiteVIS[site][sitey] = true;
             }
-            //Then by Packages (Tables 5, 6) [5x3]
-            for(var p = 0; p < NUMSTRIKES; p++){
-                K5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
-                //A5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
-                K6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
-                //A6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
-                //the helper arrays mean not needing to do table look-ups during drawing or testing collisions
-                //ASiteAcftBurnRange[site][p] = A7RADARTypeAcftBurn[ASAMTYPE[site]][p];
-                KSiteAcftBurnRange[site][p] = K7RADARTypeAcftBurn[ASAMTYPE[site]][p];
-            }
+            else{
+                A2SiteSiteVIS[site][sitey] = false;
+                K2SiteSiteVIS[site][sitey] = false;
+            }       
         }
-    //}
+        //Then by Packages (Tables 5, 6) [5x3]
+        for(var p = 0; p < NUMSTRIKES; p++){
+            K5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
+            if(M5SITEACFTLOS[site][p]==1)
+                A5SiteAcftLOS[site][p] = ComputeSiteStrikeLOS(site,p);
+            else
+                A5SiteAcftLOS[site][p] = 0;
+            K6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
+            if(M6SITEACFTDETRANGE[site][p]==1)
+                A6SiteAcftDetRange[site][p] = ComputeSiteStrikeDetRange(site,p);
+            else
+                A6SiteAcftDetRange[site][p] = 0;
+            //the helper arrays mean not needing to do table look-ups during drawing or testing collisions
+            if(M7RADARTYPEACFTBURN[ASAMTYPE[site]][p]==1)
+                ASiteAcftBurnRange[site][p] = A7RADARTypeAcftBurn[ASAMTYPE[site]][p];
+            else    
+                ASiteAcftBurnRange[site][p] = 0;
+            KSiteAcftBurnRange[site][p] = K7RADARTypeAcftBurn[ASAMTYPE[site]][p];
+        }
+    }
     //Table 9: Flight Plan [linear]
     for(var p = 0; p < 3; p++){
         for(var w = 0; w < 18; w++){
