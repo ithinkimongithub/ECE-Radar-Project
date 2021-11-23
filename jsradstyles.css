@@ -15,6 +15,7 @@ body {
     padding: 10px;
     margin: 10px;
     display: flex;
+    flex-flow: row wrap; /*added to get linebreaks after divs*/
     width: 100vw;
     height: 100vh;
     justify-content: center;
@@ -23,11 +24,21 @@ body {
 /******************************************************* CONTAINER ******************************************/
 .container{
     width:1500px;
-    height:8000px;
+    height:1400px;
     max-width: 90%;
     background-color: white;
     border-radius :5px;
     padding: 10px 10px;
+    box-shadow: 0 0 10px 2px;
+}
+
+.container-description{
+    width:850px;
+    height:2300px;
+    max-width: 90%;
+    background-color: white;
+    border-radius :5px;
+    padding: 20px 20px 20px 20px;
     box-shadow: 0 0 10px 2px;
 }
 
