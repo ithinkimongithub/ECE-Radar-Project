@@ -2045,7 +2045,7 @@ var zipfile;
 var b_zipping;
 var bordercolapse = '<style>table, th, td {border-collapse: collapse;}</style>';
 var headertobody = '<html><head><meta charset="utf-8"/><title>Export</title></head>'+bordercolapse+'<body>';
-var starttable = '<table id="feedbacktable" border="1"><tbody><tr><th>XLSX Name</th><th>Section</th><th>Last</th><th>First</th><th>Score</th><th>Exit Message</th><th>Feedback File</th></tr>';
+var starttable = '<table id="feedbacktable" border="1"><tbody><tr><th>XLSX Name</th><th>Section</th><th>Last</th><th>First</th><th>Score</th><th>Exit Message</th><th>Feedback File</th><th>Image</th></tr>';
 var endtable = '</tbody></table>';
 var closeitup = '</body></html>';
 var indexfilecontent;
@@ -2250,12 +2250,13 @@ function ScoreCurrentFile(){
             datafeed[thisrow][cats+4] = feedback[cats];
         }
         if(b_zipping){
-            document.getElementById('data-table').style.display = "block";
-            var p_score = '<p><b>Score: '+score+' pts. Simulation Report: '+ExitMessage+"</b></p>";
-            var htmlcontent = headertobody+p_score+document.getElementById('data-table').outerHTML+closeitup;
-            document.getElementById('data-table').style.display = "none";
             var htmlfilename = StudentSection+"_"+A0StudentNames[stu][0]+"_"+A0StudentNames[stu][1]+"_"+whichfiletograde+".html";
-            zipfile.file(htmlfilename,htmlcontent);
+            var imgfilename = StudentSection+"_"+A0StudentNames[stu][0]+"_"+A0StudentNames[stu][1]+"_"+whichfiletograde+".png";
+            var p_score = '<p><b>Score: '+score+' pts. Simulation Report: '+ExitMessage+"</b></p>";
+            var imgref  = '<br><img src='+imgfilename+'>';
+            document.getElementById('data-table').style.display = "block";
+            var htmlcontent = headertobody+p_score+imgref+document.getElementById('data-table').outerHTML+closeitup;
+            document.getElementById('data-table').style.display = "none";
 
             indexfilecontent+='<tr><td>'+currentfilename+'</td><td>'
                                         +StudentSection+'</td><td>'
@@ -2263,7 +2264,16 @@ function ScoreCurrentFile(){
                                         +A0StudentNames[stu][1]+'</td><td>'
                                         +score+"</td><td>"
                                         +ExitMessage+'</td><td><a href='
-                                        +htmlfilename+">"+htmlfilename+"</a></td></tr>";
+                                        +htmlfilename+">"+htmlfilename+"</a></td>"
+                                        +'<td><img src='+imgfilename+' width="365" height="350"></td></tr>';
+            function getCanvasImage(){
+                var thecanvas = document.getElementById("TheCanvas");
+                //var ctx = thecanvas.getContext("2d");
+                var imgURL = thecanvas.toDataURL("image/png");
+                return imgURL.replace(/^data:image\/(png|jpg);base64,/, "");
+            }
+            zipfile.file(htmlfilename,htmlcontent);
+            zipfile.file(imgfilename,getCanvasImage(),{base64: true});
         }
     }
     whichfiletograde += 1;
