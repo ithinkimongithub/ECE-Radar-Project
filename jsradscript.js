@@ -1082,6 +1082,7 @@ function LoadXLSXFile(){
     }
     studentsfile = file;
     name = file.name;
+    console.log("opening file: ",name);
     document.getElementById("failuremessage").hidden = false;
     reader.onload = function(event){
         var data = event.target.result;
@@ -1201,7 +1202,7 @@ function ParseXLSXFile(workbook){
         
     }
     StudentSection = FirstJSON[1].Col5.toString();
-    console.log(StudentSection, combinednames,"opening file...");
+    //console.log(StudentSection, combinednames,"opening file...");
     //Table 1 reading (remember to json index by 1)
     for(r = 0; r < NUMSAMTYPES; r++){
         for(c = 0; c < NUMSAMTYPES; c++){
@@ -1439,7 +1440,7 @@ function ParseXLSXFile(workbook){
     //Logic:
     totalcost = ComputeCost();
     EnableAllValidSamsAndLinks();
-    console.log(StudentSection,combinednames,"file loaded OK.");
+    console.log(StudentSection,combinednames," - loaded OK.");
 }
 //************************************ (2) RADIO BUTTONS **********************************
 //REMOVED FEATURE
@@ -1883,7 +1884,7 @@ function GenerateOutputFile(alloutmode = false){
     //columns:
     for(c = 0; c < bigcols; c++) data[0][c] = "Col"+c.toString();
     //Names:
-    console.log(NameRow);
+    //console.log(NameRow);
     data[NameRow-2][0] = "Student Name(s):";
     data[NameRow-1][1] = "Last:";
     data[NameRow-1][2] = "First:";
@@ -2237,7 +2238,7 @@ function ScoreCurrentFile(){
         currentfilename = filestograde[whichfiletograde].name;
     else
         currentfilename = studentsfile.name;
-    console.log(currentfilename);
+    console.log("scored ",currentfilename," w/ ",score.toString()," pts");
     //console.log(feedback);
     //push to datafeed for eventual output
     for(var stu = 0; stu < STUDENTSPERGROUP; stu++){
